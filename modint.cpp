@@ -10,14 +10,14 @@ struct Modint{
     inline constexpr Modint operator= (ll x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
     inline constexpr Modint operator+ (ll x){ return Modint(_num + x); }
     inline constexpr Modint operator+ (Modint x){ ll a = _num + x._num; if(a >= mod) a -= mod; return Modint{a}; }
-    inline constexpr Modint operator- (ll x){ return Modint(_num - x); }
-    inline constexpr Modint operator- (Modint x){ ll a = _num - x._num; if(a < 0) a += mod; return Modint{a}; }
-    inline constexpr Modint operator* (ll x){ return Modint(_num * (x % mod)); }
-    inline constexpr Modint operator* (Modint x){ return Modint{_num * x._num % mod}; }
     inline constexpr Modint operator+=(ll x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator+=(Modint x){ _num += x._num; if(_num >= mod) _num -= mod; return *this; }
+    inline constexpr Modint operator- (ll x){ return Modint(_num - x); }
+    inline constexpr Modint operator- (Modint x){ ll a = _num - x._num; if(a < 0) a += mod; return Modint{a}; }
     inline constexpr Modint operator-=(ll x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator-=(Modint x){ _num -= x._num; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint operator* (ll x){ return Modint(_num * (x % mod)); }
+    inline constexpr Modint operator* (Modint x){ return Modint{_num * x._num % mod}; }
     inline constexpr Modint operator*=(ll x){ x %= mod; _num *= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator*=(Modint x){ _num *= x._num; _num %= mod; return *this; }
     inline constexpr Modint operator/ (ll x){ return Modint(_num * invmod(x % mod, mod)); }
@@ -30,7 +30,7 @@ struct Modint{
 vector<Modint>fac(1, 1),inv(1, 1);
 inline void reserve(ll a){
     if(fac.size() >= a) return;
-    update_max(a, ll(fac.size()) * 2);
+    if(a < fac.size() * 2) a = fac.size() * 2;
     while(fac.size() < a) fac.push_back(fac.back() * ll(fac.size()));
     inv.resize(fac.size());
     inv.back() = Modint(1) / fac.back();
