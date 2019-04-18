@@ -40,11 +40,11 @@ inline void print(const long double &a){ printf("%Lf", a); }
 template<class T> void print(const vector<T> &vec);
 template<class T, size_t size> void print(const array<T, size> &vec);
 template<class T, class L> void print(const pair<T, L> &p);
-template<class T, size_t size> inline enable_if_t<is_same<T, const char>::value == 0> print(const T (&vec)[size]);
+template<class T, size_t size> inline void print(const T (&vec)[size]);
 template<class T> void print(const vector<T> &vec){ print(vec[0]); for(auto i = vec.begin(); ++i != vec.end(); ){ putchar(' '); print(*i); } }
 template<class T, size_t size> void print(const array<T, size> &vec){ print(vec[0]); for(auto i = vec.begin(); ++i != vec.end(); ){ putchar(' '); print(*i); } }
 template<class T, class L> void print(const pair<T, L> &p){ print(p.first); putchar(' '); print(p.second); }
-template<class T, size_t size> inline enable_if_t<is_same<T, const char>::value == 0> print(const T (&vec)[size]){ print(vec[0]); for(auto i = vec; ++i != end(vec); ){ putchar(' '); print(*i); } }
+template<class T, size_t size> inline void print(const T (&vec)[size]){ print(vec[0]); for(auto i = vec; ++i != end(vec); ){ putchar(' '); print(*i); } }
 template<class T> inline void print(const T &a){ cout << a; }
 inline bool out(){ putchar('\n'); return 0; }
 template<class T> inline bool out(const T &t){ print(t); putchar('\n'); return 0; }
