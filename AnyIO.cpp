@@ -47,7 +47,7 @@ template<class T, size_t size> inline void print(const T (&vec)[size]){ print(ve
 template<class T> inline void print(const T &a){ cout << a; }
 inline bool out(){ putchar('\n'); return 0; }
 template<class T> inline bool out(const T &t){ print(t); putchar('\n'); return 0; }
-template<class Head, class... Tail> inline bool out(const Head &head, const Tail&... tail){ print(head); print(' '); out(tail...); return 0; }
+template<class Head, class... Tail> inline bool out(const Head &head, const Tail&... tail){ print(head); putchar(' '); out(tail...); return 0; }
 
 
 int main(){ // 使用例
