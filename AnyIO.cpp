@@ -23,7 +23,7 @@ template<class T, class L> inline void scan(pair<T, L> &p){ scan(p.first); scan(
 template<class T, size_t size> inline void scan(T (&vec)[size]){ for(auto &i : vec) scan(i); }
 template<class T> inline void scan(T &a){ cin>>a; }
 inline void in(){}
-template <class Head, class... Tail> inline void in(Head &&head, Tail&&... tail){ scan(head); in(move(tail)...); }
+template <class Head, class... Tail> inline void in(Head &head, Tail&... tail){ scan(head); in(tail...); }
 inline void print(){ putchar('\n'); }
 inline void print(const bool &a){ printf("%d", a); }
 inline void print(const int &a){ printf("%d", a); }
