@@ -3,7 +3,6 @@ using namespace std;
 
 
 inline int scan(){ return getchar(); }
-inline void scan(vector<bool>::reference &a){ int b; scanf("%d", &b); a = b; }
 inline void scan(int &a){ scanf("%d", &a); }
 inline void scan(unsigned &a){ scanf("%u", &a); }
 inline void scan(long &a){ scanf("%ld", &a); }
@@ -56,6 +55,6 @@ int main(){ // 使用例
     vector<vector<pair<int, int>>> b(2, vector<pair<int,int>>(2));
     double c;
     long long d;
-    in(a,b,c,d);
-    out(a,b,c,d);
+    in(a, b, c, d);
+    out(a, b, c, d);
 }
