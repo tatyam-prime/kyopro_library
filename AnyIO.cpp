@@ -34,7 +34,7 @@ inline void print(const unsigned long long &a){ printf("%llu", a); }
 inline void print(const char &a){ printf("%c", a); }
 inline void print(const char a[]){ printf("%s", a); }
 inline void print(const float &a){ printf("%.10f", a); }
-inline void print(const double &a){ printf("%.10lf", a); }
+inline void print(const double &a){ printf("%.10f", a); }
 inline void print(const long double &a){ printf("%.10Lf", a); }
 template<class T> void print(const vector<T> &vec);
 template<class T, size_t size> void print(const array<T, size> &vec);
