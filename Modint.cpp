@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using ll = long long;
 
 constexpr ll mod = 1000000007; // 面倒なのでここで
