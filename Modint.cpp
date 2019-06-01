@@ -1,3 +1,4 @@
+#include<bits/stdc++.h>
 using ll = long long;
 
 constexpr ll mod = 1000000007; // 面倒なのでここで
@@ -55,7 +56,7 @@ inline Modint comb(ll n, ll r){ if(r < 0 || n < r) return 0; reserve(n + 1); ret
 inline Modint Mcomb(ll n, ll r){ return comb(n + r - 1, n - 1); } // r個をn部屋に分ける
 
 //　exawizards2019_e
-signed main(){
+int main(){
     Modint ans = 1;
     ans /= 2;
     Modint cnt = ans;
