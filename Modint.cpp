@@ -8,41 +8,41 @@ struct Modint{
     ll _num;
     constexpr Modint() : _num() { _num = 0; }
     constexpr Modint(ll x) : _num() { _num = x % mod; if(_num < 0) _num += mod; }
-    inline constexpr Modint operator= (int x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
-    inline constexpr Modint operator= (ll x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
-    inline constexpr Modint operator= (Modint x){ _num = x._num; return *this; }
-    inline constexpr Modint operator+ (int x){ return Modint(_num + x); }
-    inline constexpr Modint operator+ (ll x){ return Modint(_num + x); }
-    inline constexpr Modint operator+ (Modint x){ ll a = _num + x._num; if(a >= mod) a -= mod; return Modint{a}; }
-    inline constexpr Modint operator+=(int x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
-    inline constexpr Modint operator+=(ll x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
-    inline constexpr Modint operator+=(Modint x){ _num += x._num; if(_num >= mod) _num -= mod; return *this; }
-    inline constexpr Modint operator++(){ if(_num == mod - 1) _num = 0; else _num++; return *this; }
+    inline constexpr Modint& operator= (const int &x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
+    inline constexpr Modint& operator= (const ll &x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
+    inline constexpr Modint& operator= (const Modint &x){ _num = x._num; return *this; }
+    inline constexpr const Modint operator+ (const int &x) const { return Modint(_num + x); }
+    inline constexpr const Modint operator+ (const ll &x) const { return Modint(_num + x); }
+    inline constexpr const Modint operator+ (const Modint &x) const { ll a = _num + x._num; if(a >= mod) a -= mod; return Modint{a}; }
+    inline constexpr Modint& operator+=(const int &x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint& operator+=(const ll &x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint& operator+=(const Modint &x){ _num += x._num; if(_num >= mod) _num -= mod; return *this; }
+    inline constexpr Modint& operator++(){ if(_num == mod - 1) _num = 0; else _num++; return *this; }
     inline constexpr const Modint operator++(int){ const Modint ans = *this; if(_num == mod - 1) _num = 0; else _num++; return ans; }
-    inline constexpr Modint operator- (int x){ return Modint(_num - x); }
-    inline constexpr Modint operator- (ll x){ return Modint(_num - x); }
-    inline constexpr Modint operator- (Modint x){ ll a = _num - x._num; if(a < 0) a += mod; return Modint{a}; }
-    inline constexpr Modint operator-=(int x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
-    inline constexpr Modint operator-=(ll x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
-    inline constexpr Modint operator-=(Modint x){ _num -= x._num; if(_num < 0) _num += mod; return *this; }
-    inline constexpr Modint operator--(){ if(_num == 0) _num = mod - 1; else _num--; return *this; }
+    inline constexpr const Modint operator- (const int &x) const { return Modint(_num - x); }
+    inline constexpr const Modint operator- (const ll &x) const { return Modint(_num - x); }
+    inline constexpr const Modint operator- (const Modint &x) const { ll a = _num - x._num; if(a < 0) a += mod; return Modint{a}; }
+    inline constexpr Modint& operator-=(const int &x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint& operator-=(const ll &x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint& operator-=(const Modint &x){ _num -= x._num; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint& operator--(){ if(_num == 0) _num = mod - 1; else _num--; return *this; }
     inline constexpr const Modint operator--(int){ const Modint ans = *this; if(_num == 0) _num = mod - 1; else _num--; return ans; }
-    inline constexpr Modint operator* (int x){ return Modint(_num * (x % mod)); }
-    inline constexpr Modint operator* (ll x){ return Modint(_num * (x % mod)); }
-    inline constexpr Modint operator* (Modint x){ return Modint{_num * x._num % mod}; }
-    inline constexpr Modint operator*=(int x){ _num *= Modint(x); _num %= mod; return *this; }
-    inline constexpr Modint operator*=(ll x){ _num *= Modint(x); _num %= mod; return *this; }
-    inline constexpr Modint operator*=(Modint x){ _num *= x._num; _num %= mod; return *this; }
-    inline constexpr Modint operator/ (int x){ return Modint(_num * invmod(Modint(x), mod)); }
-    inline constexpr Modint operator/ (ll x){ return Modint(_num * invmod(Modint(x), mod)); }
-    inline constexpr Modint operator/ (Modint x){ return Modint{_num * invmod(x._num, mod) % mod}; }
-    inline constexpr Modint operator/=(int x){ _num *= invmod(Modint(x), mod); _num %= mod; return *this; }
-    inline constexpr Modint operator/=(ll x){ _num *= invmod(Modint(x), mod); _num %= mod; return *this; }
-    inline constexpr Modint operator/=(Modint x){ _num *= invmod(x._num, mod); _num %= mod; return *this; }
-    inline constexpr Modint pow(ll x){ ll i = 1; Modint ans = 1, cnt = *this; while(i <= x){ if(x & i){ ans *= cnt; x ^= i; } cnt *= cnt; i *= 2; } return ans; }
+    inline constexpr const Modint operator* (const int &x) const { return Modint(_num * (x % mod)); }
+    inline constexpr const Modint operator* (const ll &x) const { return Modint(_num * (x % mod)); }
+    inline constexpr const Modint operator* (const Modint &x) const { return Modint{_num * x._num % mod}; }
+    inline constexpr Modint& operator*=(const int &x){ _num *= Modint(x); _num %= mod; return *this; }
+    inline constexpr Modint& operator*=(const ll &x){ _num *= Modint(x); _num %= mod; return *this; }
+    inline constexpr Modint& operator*=(const Modint &x){ _num *= x._num; _num %= mod; return *this; }
+    inline constexpr const Modint operator/ (const int &x) const { return Modint(_num * invmod(Modint(x), mod)); }
+    inline constexpr const Modint operator/ (const ll &x) const { return Modint(_num * invmod(Modint(x), mod)); }
+    inline constexpr const Modint operator/ (const Modint &x) const { return Modint{_num * invmod(x._num, mod) % mod}; }
+    inline constexpr Modint& operator/=(const int &x){ _num *= invmod(Modint(x), mod); _num %= mod; return *this; }
+    inline constexpr Modint& operator/=(const ll &x){ _num *= invmod(Modint(x), mod); _num %= mod; return *this; }
+    inline constexpr Modint& operator/=(const Modint &x){ _num *= invmod(x._num, mod); _num %= mod; return *this; }
+    inline constexpr const Modint pow(ll x) const { ll i = 1; Modint ans = 1, cnt = *this; while(i <= x){ if(x & i){ ans *= cnt; x ^= i; } cnt *= cnt; i *= 2; } return ans; }
     inline constexpr operator ll() const { return _num; }
 };
-vector<Modint> fac(1, 1), inv(1, 1);
+std::vector<Modint> fac(1, 1), inv(1, 1);
 inline void reserve(ll a){
     if(fac.size() >= a) return;
     if(a < fac.size() * 2) a = fac.size() * 2;
