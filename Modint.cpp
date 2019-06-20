@@ -17,14 +17,16 @@ struct Modint{
     inline constexpr Modint operator+=(int x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator+=(ll x){ _num += x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator+=(Modint x){ _num += x._num; if(_num >= mod) _num -= mod; return *this; }
-    inline constexpr Modint operator++(){ _num++; if(_num == mod) _num = 0; return *this; }
+    inline constexpr Modint operator++(){ if(_num == mod - 1) _num = 0; else _num++; return *this; }
+    inline constexpr const Modint operator++(int){ const Modint ans = *this; if(_num == mod - 1) _num = 0; else _num++; return ans; }
     inline constexpr Modint operator- (int x){ return Modint(_num - x); }
     inline constexpr Modint operator- (ll x){ return Modint(_num - x); }
     inline constexpr Modint operator- (Modint x){ ll a = _num - x._num; if(a < 0) a += mod; return Modint{a}; }
     inline constexpr Modint operator-=(int x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator-=(ll x){ _num -= x; _num %= mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint operator-=(Modint x){ _num -= x._num; if(_num < 0) _num += mod; return *this; }
-    inline constexpr Modint operator--(){ _num--; if(_num == -1) _num = mod - 1; return *this; }
+    inline constexpr Modint operator--(){ if(_num == 0) _num = mod - 1; else _num--; return *this; }
+    inline constexpr const Modint operator--(int){ const Modint ans = *this; if(_num == 0) _num = mod - 1; else _num--; return ans; }
     inline constexpr Modint operator* (int x){ return Modint(_num * (x % mod)); }
     inline constexpr Modint operator* (ll x){ return Modint(_num * (x % mod)); }
     inline constexpr Modint operator* (Modint x){ return Modint{_num * x._num % mod}; }
