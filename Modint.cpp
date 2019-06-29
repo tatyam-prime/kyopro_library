@@ -4,9 +4,6 @@ using ll = long long;
 constexpr ll mod = 1000000007; // 面倒なのでここで
 inline constexpr ll extgcd(ll a, ll b, ll &x, ll &y){ ll g = a; x = 1; y = 0; if(b){ g = extgcd(b, a % b, y, x); y -= a / b * x; } return g; }
 inline constexpr ll invmod(ll a, ll m = mod){ ll x = 0, y = 0; extgcd(a, m, x, y); return (x + m) % m; }
-constexpr ll mod = <#MOD#>;
-inline constexpr ll extgcd(ll a, ll b, ll &x, ll &y){ ll g = a; x = 1; y = 0; if(b){ g = extgcd(b, a % b, y, x); y -= a / b * x; } return g; }
-inline constexpr ll invmod(ll a, ll m = mod){ ll x = 0, y = 0; extgcd(a, m, x, y); return (x + m) % m; }
 struct Modint{
     ll _num;
     constexpr Modint() : _num() { _num = 0; }
