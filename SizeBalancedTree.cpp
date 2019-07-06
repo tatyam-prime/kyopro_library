@@ -752,8 +752,6 @@ namespace tatyam {
             iterator(set_ptr parent, node_ptr base): parent(parent), base(base) {}
             value_type& operator*() const { return *base->val; }
             pointer operator->() const noexcept { return base->val; }
-            const value_type& operator[](difference_type n) const { return *operator+(n); }
-            value_type& operator[](difference_type n) { return *operator+(n); }
             iterator& operator++() {
                 if(base->right->is_nil()) {
                     while(base->child == RIGHT_CHILD) base = base->parent;
