@@ -1,4 +1,6 @@
 // 順列の掛け算と累乗
+using ll = long long;
+
 
 struct Permutation { // 0-indexed
     vector<ll> perm;
