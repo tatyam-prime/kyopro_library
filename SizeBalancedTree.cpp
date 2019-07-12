@@ -570,7 +570,7 @@ namespace tatyam {
         iterator operator<(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(*at->base, x)) { ans = at; at = at->right; }
+                if(key_compare(*at->val, x)) { ans = at; at = at->right; }
                 else at = at->left;
             }
             return iterator(this, ans);
@@ -578,8 +578,8 @@ namespace tatyam {
         iterator operator<=(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(x, *at->base)) at = at->left;
-                else if(key_compare(*at->base, x)) { ans = at; at = at->right; }
+                if(key_compare(x, *at->val)) at = at->left;
+                else if(key_compare(*at->val, x)) { ans = at; at = at->right; }
                 else return iterator(this, at);
             }
             return iterator(this, ans);
@@ -587,7 +587,7 @@ namespace tatyam {
         iterator operator>(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(x, *at->base)) { ans = at; at = at->left; }
+                if(key_compare(x, *at->val)) { ans = at; at = at->left; }
                 else at = at->right;
             }
             return iterator(this, ans);
@@ -595,8 +595,8 @@ namespace tatyam {
         iterator operator>=(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(*at->base, x)) at = at->right;
-                else if(key_compare(x, *at->base)) { ans = at; at = at->left; }
+                if(key_compare(*at->val, x)) at = at->right;
+                else if(key_compare(x, *at->val)) { ans = at; at = at->left; }
                 else return iterator(this, at);
             }
             return iterator(this, ans);
