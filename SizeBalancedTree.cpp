@@ -1,3 +1,8 @@
+#include <functional>
+#include <initializer_list>
+#include <iterator>
+#include <vector>
+
 namespace tatyam {
     
     constexpr int LEFT_CHILD = -1, RIGHT_CHILD = 1, NIL_CHILD = 0;
@@ -242,8 +247,8 @@ namespace tatyam {
         iterator find(const key_type& x) const {
             node_ptr ans = _root;
             while(!ans->is_nil()) {
-                if(key_compare(*ans->val, x)) ans = ans->right;
-                else if(key_compare(x, *ans->val)) ans = ans->left;
+                if(key_compare(*ans->key, x)) ans = ans->right;
+                else if(key_compare(x, *ans->key)) ans = ans->left;
                 else break;
             }
             return iterator(this, ans);
@@ -320,14 +325,14 @@ namespace tatyam {
             }
             node_ptr at = _root;
             while(true) {
-                if(key_compare(*at->val, *p)) {
+                if(key_compare(*at->key, *p)) {
                     if(at->right->is_nil()) {
                         _insert_right(at, p);
                         return {iterator(this, at->right), true};
                     }
                     else at = at->right;
                 }
-                else if(key_compare(*p, *at->val)) {
+                else if(key_compare(*p, *at->key)) {
                     if(at->left->is_nil()) {
                         _insert_left(at, p);
                         return {iterator(this, at->left), true};
@@ -361,14 +366,14 @@ namespace tatyam {
             while(!_begin->left->is_nil()) _begin = _begin->left;
             while(!_rbegin->right->is_nil()) _rbegin = _rbegin->right;
         }
-        void _insert_left(node_ptr at, pointer val) {
-            at->left = new node(at, LEFT_CHILD, val);
+        void _insert_left(node_ptr at, pointer key) {
+            at->left = new node(at, LEFT_CHILD, key);
             if(_begin == at) _begin = at->left;
             _add_path(at->left, 1);
             _maintain_path(at);
         }
-        void _insert_right(node_ptr at, pointer val) {
-            at->right = new node(at, RIGHT_CHILD, val);
+        void _insert_right(node_ptr at, pointer key) {
+            at->right = new node(at, RIGHT_CHILD, key);
             if(_rbegin == at) _rbegin = at->right;
             _add_path(at->right, 1);
             _maintain_path(at);
@@ -570,7 +575,7 @@ namespace tatyam {
         iterator operator<(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(*at->val, x)) { ans = at; at = at->right; }
+                if(key_compare(*at->key, x)) { ans = at; at = at->right; }
                 else at = at->left;
             }
             return iterator(this, ans);
@@ -578,8 +583,8 @@ namespace tatyam {
         iterator operator<=(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(x, *at->val)) at = at->left;
-                else if(key_compare(*at->val, x)) { ans = at; at = at->right; }
+                if(key_compare(x, *at->key)) at = at->left;
+                else if(key_compare(*at->key, x)) { ans = at; at = at->right; }
                 else return iterator(this, at);
             }
             return iterator(this, ans);
@@ -587,7 +592,7 @@ namespace tatyam {
         iterator operator>(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(x, *at->val)) { ans = at; at = at->left; }
+                if(key_compare(x, *at->key)) { ans = at; at = at->left; }
                 else at = at->right;
             }
             return iterator(this, ans);
@@ -595,8 +600,8 @@ namespace tatyam {
         iterator operator>=(const key_type& x) const {
             node_ptr ans = NIL, at = _root;
             while(!at->is_nil()) {
-                if(key_compare(*at->val, x)) at = at->right;
-                else if(key_compare(x, *at->val)) { ans = at; at = at->left; }
+                if(key_compare(*at->key, x)) at = at->right;
+                else if(key_compare(x, *at->key)) { ans = at; at = at->left; }
                 else return iterator(this, at);
             }
             return iterator(this, ans);
@@ -615,9 +620,9 @@ namespace tatyam {
             if(x.empty()) return *this;
             iterator p = x.begin();
             if(key_compare(*p, *begin())) {
-                pointer val = traits::allocate(alloc, 1);
-                traits::construct(alloc, val, *p);
-                _begin = _begin->left = new node(_begin, LEFT_CHILD, val);
+                pointer key = traits::allocate(alloc, 1);
+                traits::construct(alloc, key, *p);
+                _begin = _begin->left = new node(_begin, LEFT_CHILD, key);
                 ++p;
             }
             iterator l = begin(), r = ++begin();
@@ -625,14 +630,14 @@ namespace tatyam {
                 while(!r.base->is_nil() && !key_compare(*p, *r)) l = r++;
                 if(key_compare(*l, *p)) {
                     if(l.base->right->is_nil()) {
-                        pointer val = traits::allocate(alloc, 1);
-                        traits::construct(alloc, val, *p);
-                        l.base = l.base->right = new node(l.base, RIGHT_CHILD, val);
+                        pointer key = traits::allocate(alloc, 1);
+                        traits::construct(alloc, key, *p);
+                        l.base = l.base->right = new node(l.base, RIGHT_CHILD, key);
                     }
                     else {
-                        pointer val = traits::allocate(alloc, 1);
-                        traits::construct(alloc, val, *p);
-                        l.base = r.base->left = new node(r.base, LEFT_CHILD, val);
+                        pointer key = traits::allocate(alloc, 1);
+                        traits::construct(alloc, key, *p);
+                        l.base = r.base->left = new node(r.base, LEFT_CHILD, key);
                     }
                 }
                 ++p;
@@ -680,9 +685,9 @@ namespace tatyam {
             if(x.empty()) return *this;
             iterator p = x.begin();
             if(key_compare(*p, *begin())) {
-                pointer val = traits::allocate(alloc, 1);
-                traits::construct(alloc, val, *p);
-                _begin = _begin->left = new node(_begin, LEFT_CHILD, val);
+                pointer key = traits::allocate(alloc, 1);
+                traits::construct(alloc, key, *p);
+                _begin = _begin->left = new node(_begin, LEFT_CHILD, key);
                 ++p;
             }
             else while(!_root->is_nil() && p != x.end() && _equal(*begin(), *p)) {
@@ -700,14 +705,14 @@ namespace tatyam {
                     _erase(l--, true);
                 }
                 else if(l.base->right->is_nil()) {
-                    pointer val = traits::allocate(alloc, 1);
-                    traits::construct(alloc, val, *p);
-                    l.base = l.base->right = new node(l.base, RIGHT_CHILD, val);
+                    pointer key = traits::allocate(alloc, 1);
+                    traits::construct(alloc, key, *p);
+                    l.base = l.base->right = new node(l.base, RIGHT_CHILD, key);
                 }
                 else {
-                    pointer val = traits::allocate(alloc, 1);
-                    traits::construct(alloc, val, *p);
-                    l.base = r.base->left = new node(r.base, LEFT_CHILD, val);
+                    pointer key = traits::allocate(alloc, 1);
+                    traits::construct(alloc, key, *p);
+                    l.base = r.base->left = new node(r.base, LEFT_CHILD, key);
                 }
                 ++p;
             }
@@ -735,13 +740,13 @@ namespace tatyam {
         }
         
         struct node {
-            pointer val;
+            pointer key;
             node *parent = NIL, *left = NIL, *right = NIL;
             size_type size = 0;
             int child = NIL_CHILD;
             node() {}
-            node(node_ptr parent, int child, pointer val, size_type size = 0): parent(parent), val(val), child(child), size(size) {}
-            ~node() { if(!is_nil()) { alloc.deallocate(val, 1); } }
+            node(node_ptr parent, int child, pointer key, size_type size = 0): parent(parent), key(key), child(child), size(size) {}
+            ~node() { if(!is_nil()) { alloc.deallocate(key, 1); } }
             bool is_nil() const { return !child; }
         };
         
@@ -750,8 +755,8 @@ namespace tatyam {
             set_ptr parent;
             node_ptr base;
             iterator(set_ptr parent, node_ptr base): parent(parent), base(base) {}
-            value_type& operator*() const { return *base->val; }
-            pointer operator->() const noexcept { return base->val; }
+            value_type& operator*() const { return *base->key; }
+            pointer operator->() const noexcept { return base->key; }
             iterator& operator++() {
                 if(base->right->is_nil()) {
                     while(base->child == RIGHT_CHILD) base = base->parent;
