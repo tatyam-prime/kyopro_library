@@ -8,8 +8,8 @@ struct Modint{
     ll _num;
     constexpr Modint() : _num() { _num = 0; }
     constexpr Modint(ll x) : _num() { _num = x % mod; if(_num < 0) _num += mod; }
-    inline constexpr Modint& operator= (int x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
-    inline constexpr Modint& operator= (ll x){ _num = x % mod; if(_num<0) _num += mod; return *this; }
+    inline constexpr Modint& operator= (int x){ _num = x % mod; if(_num < 0) _num += mod; return *this; }
+    inline constexpr Modint& operator= (ll x){ _num = x % mod; if(_num < 0) _num += mod; return *this; }
     inline constexpr Modint& operator= (Modint x){ _num = x._num; return *this; }
     inline constexpr Modint operator+ (int x) const { return Modint(_num + x); }
     inline constexpr Modint operator+ (ll x) const { return Modint(_num + x); }
