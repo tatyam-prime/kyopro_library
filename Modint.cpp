@@ -43,6 +43,7 @@ struct Modint{
     inline constexpr Modint pow(ll x) const { ll i = 1; Modint ans = 1, cnt = *this; while(i <= x){ if(x & i){ ans *= cnt; x ^= i; } cnt *= cnt; i *= 2; } return ans; }
     inline constexpr operator ll() const { return num; }
 };
+std::istream& operator>>(std::istream& is, Modint& x) { is >> x.num; x = Modint(x.num); return is; }
 inline constexpr Modint operator""_M(ull x) { return Modint(x); }
 std::vector<Modint> fac(1, 1), inv(1, 1);
 inline void reserve(ll a){
