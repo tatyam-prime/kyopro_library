@@ -1,12 +1,17 @@
 // https://ei1333.github.io/luzhiled/snippets/string/rolling-hash.html を改造
 
 
-const int bases[64] = {258, 259, 263, 264, 265, 268, 269, 270, 271, 272, 273, 275, 276, 278, 279, 280, 281, 282, 283, 284, 286, 287, 288, 292, 295, 296, 298, 299, 300, 302, 305, 307, 310, 311, 312, 313, 314, 316, 317, 319, 320, 323, 325, 326, 327, 328, 331, 332, 337, 338, 342, 343, 347, 348, 349, 353, 356, 357, 359, 363, 371, 373, 374, 377};
-const ull mod = 281474976710597, base = bases[random_device()() & 63];
+const int bases[64] = {261, 263, 264, 266, 267, 268, 269, 270, 272, 275, 276, 281, 285, 292, 293, 295, 297, 301, 302, 305, 310, 311, 325, 327, 329, 333, 341, 347, 348, 350, 351, 355, 358, 360, 367, 371, 373, 375, 378, 380, 383, 385, 386, 389, 396, 397, 399, 401, 402, 403, 405, 408, 414, 416, 418, 422, 430, 433, 434, 437, 438, 448, 453, 454};
+const ull mod = 36028797018963913, base = bases[random_device()() & 63];
 struct RollingHash {
     vector<ull> hashed, power;
+    
     inline ull mul(ull a, ull b) const {
         return __uint128_t(a) * b % mod;
+    }
+    
+    inline ull mul2(ull a, ull b) const {
+        return a * b % mod;
     }
     
     RollingHash(const string &s) {
@@ -15,8 +20,8 @@ struct RollingHash {
         power.assign(n + 1, 0);
         power[0] = 1;
         rep(n) {
-            power[i + 1] = mul(power[i], base);
-            hashed[i + 1] = mul(hashed[i], base) + s[i];
+            power[i + 1] = mul2(power[i], base);
+            hashed[i + 1] = mul2(hashed[i], base) + s[i];
             if(hashed[i + 1] >= mod) hashed[i + 1] -= mod;
         }
     }
