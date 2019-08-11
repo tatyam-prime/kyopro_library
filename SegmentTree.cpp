@@ -34,7 +34,7 @@ struct SegmentTree{
         data[at] += val;
         update(at);
     }
-    void get(ll l, ll r){
+    T get(ll l, ll r){
         T L = def_value, R = def_value;
         l += size; r += size;
         for(; l < r; l /= 2, r /= 2){
