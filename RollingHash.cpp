@@ -38,6 +38,17 @@ struct RollingHash {
         return ret;
     }
     
+    void connect(const string &s){
+        ll n = hashed.size() - 1, m = s.size();
+        hashed.resize(n + m + 1);
+        power.resize(n + m + 1);
+        rep(i, n, n + m) {
+            power[i + 1] = mul2(power[i], base);
+            hashed[i + 1] = mul2(hashed[i], base) + s[i - n];
+            if(hashed[i + 1] >= mod) hashed[i + 1] -= mod;
+        }
+    }
+    
     ll LCP(const RollingHash &b, ll l1, ll r1, ll l2, ll r2) {
         ll len = min(r1 - l1, r2 - l2);
         ll low = -1, high = len + 1;
