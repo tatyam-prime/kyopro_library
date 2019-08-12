@@ -67,7 +67,7 @@ struct RollingHash {
 
 
 const int bases[64] = {259, 261, 264, 269, 270, 280, 281, 284, 285, 286, 288, 295, 298, 304, 307, 309, 310, 311, 312, 316, 318, 319, 322, 323, 328, 330, 348, 350, 352, 353, 355, 359, 360, 367, 378, 380, 381, 382, 384, 390, 393, 394, 395, 397, 398, 399, 402, 410, 412, 413, 414, 416, 417, 424, 434, 435, 438, 440, 442, 449, 450, 462, 463, 464};
-const ull mod = 4294967291, base = bases[duration_cast<microseconds>(system_clock::now().time_since_epoch()).count() & 63];
+const ull mod = 4294967291, base = bases[chrono::duration_cast<chrono::microseconds>(chrono::system_clock::now().time_since_epoch()).count() & 63];
 struct RollingHash {
     vector<ull> hashed, power;
     
