@@ -1,1 +1,0 @@
-# kyopro_library
