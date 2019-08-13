@@ -6,17 +6,20 @@ const ull mod = 0x1fffffffffffffff, base = bases[chrono::duration_cast<chrono::m
 struct RollingHash {
     vector<ull> hashed, power;
     
+    static constexpr ull mask(int a) { return (1ull << a) - 1; }
+    
     inline ull mul(ull a, ull b) const {
+        //*
+        __uint128_t ans = __uint128_t(a) * b;
+        /*/
+        // without __uint128_t
         ull a31 = a >> 31, b31 = b >> 31;
-        a &= (1u << 31) - 1;
-        b &= (1u << 31) - 1;
+        a &= mask(31);
+        b &= mask(31);
         ull x = a * b31 + b * a31;
-        ull ans = (a31 * b31 << 1) + (x >> 30) + ((x & (1 << 30) - 1) << 31) + a * b;
-        if(ans >= 1ull << 61){
-            a = ans >> 61;
-            ans &= mod;
-            ans += a;
-        }
+        ull ans = (a31 * b31 << 1) + (x >> 30) + ((x & mask(30)) << 31) + a * b;
+        //*/
+        ans = (ans >> 61) + (ans & mask(61));
         if(ans >= mod) ans -= mod;
         return ans;
     }
