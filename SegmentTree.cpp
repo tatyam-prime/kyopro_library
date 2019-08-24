@@ -34,7 +34,7 @@ struct SegmentTree{
         data[at] += val;
         update(at);
     }
-    T get(ll l, ll r){
+    T get(ll l, ll r) const {
         T L = def_value, R = def_value;
         l += size; r += size;
         for(; l < r; l /= 2, r /= 2){
@@ -43,20 +43,20 @@ struct SegmentTree{
         }
         return f(L, R);
     }
+    void clear(){
+        for(auto& i : data) i = def_value;
+    }
 };
-
 template<class T>
 struct SegmentTree_Min : SegmentTree<T>{
     SegmentTree_Min(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return min(a, b);}){}
     SegmentTree_Min(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return min(a, b);}){}
 };
-
 template<class T>
 struct SegmentTree_Max : SegmentTree<T>{
     SegmentTree_Max(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return max(a, b);}){}
     SegmentTree_Max(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return max(a, b);}){}
 };
-
 template<class T>
 struct SegmentTree_Sum : SegmentTree<T>{
     SegmentTree_Sum(ll n, const T& def_value = T()) : SegmentTree<T>(n, def_value, [](T a, T b){return a + b;}){}
