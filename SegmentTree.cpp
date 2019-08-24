@@ -48,17 +48,17 @@ struct SegmentTree{
     }
 };
 template<class T>
-struct SegmentTree_Min : SegmentTree<T>{
-    SegmentTree_Min(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return min(a, b);}){}
-    SegmentTree_Min(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return min(a, b);}){}
+struct SegmentTreeMin : SegmentTree<T>{
+    SegmentTreeMin(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return min(a, b);}){}
+    SegmentTreeMin(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return min(a, b);}){}
 };
 template<class T>
-struct SegmentTree_Max : SegmentTree<T>{
-    SegmentTree_Max(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return max(a, b);}){}
-    SegmentTree_Max(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return max(a, b);}){}
+struct SegmentTreeMax : SegmentTree<T>{
+    SegmentTreeMax(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return max(a, b);}){}
+    SegmentTreeMax(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return max(a, b);}){}
 };
 template<class T>
-struct SegmentTree_Sum : SegmentTree<T>{
-    SegmentTree_Sum(ll n, const T& def_value = T()) : SegmentTree<T>(n, def_value, [](T a, T b){return a + b;}){}
-    SegmentTree_Sum(const vector<T>& v, const T& def_value = T()) : SegmentTree<T>(v, def_value, [](T a, T b){return a + b;}){}
+struct SegmentTreeSum : SegmentTree<T>{
+    SegmentTreeSum(ll n, const T& def_value = T()) : SegmentTree<T>(n, def_value, [](T a, T b){return a + b;}){}
+    SegmentTreeSum(const vector<T>& v, const T& def_value = T()) : SegmentTree<T>(v, def_value, [](T a, T b){return a + b;}){}
 };
