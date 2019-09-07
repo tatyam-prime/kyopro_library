@@ -13,7 +13,7 @@ struct SegmentTree{
         data.assign(size * 2, def_value);
     }
     SegmentTree(const vector<T>& v, const T& def_value, const F& f): f(f), def_value(def_value){
-        while(size < data.size()) size *= 2;
+        while(size < v.size()) size *= 2;
         data.assign(size * 2, def_value);
         for(ll i = 0; i < v.size(); i++) data[size + i] = v[i];
         for(ll i = size; --i;) data[i] = f(data[i * 2], data[i * 2 + 1]);
