@@ -52,3 +52,39 @@ struct PartiallyPersistentUnionFind{
         return -(--lower_bound(hst[x].begin(), hst[x].end(), make_pair(t, 0)))->second;
     }
 };
+
+
+
+struct UnionFindWithDistance{
+    vector<ll> data, diff;
+    UnionFindWithDistance(ll n): data(n, -1), diff(n){}
+    ll root(ll x){
+        if (data[x] < 0) return x;
+        ll r = root(data[x]);
+        diff[x] += diff[data[x]];
+        return data[x] = r;
+    }
+    ll dist(ll x){
+        root(x);
+        return diff[x];
+    }
+    ll dist(ll x, ll y){
+        return dist(y) - dist(x);
+    }
+    int unite(ll x, ll y, ll w){
+        w += dist(x); w -= dist(y);
+        ll rx = root(x), ry = root(y);
+        if(rx == ry) return dist(x, y) == w ? 1 : -1;
+        if(data[rx] > data[ry]){
+            swap(x, y);
+            w = -w;
+        }
+        data[ry] = rx;
+        diff[ry] = w;
+        return 0;
+    }
+    // extra
+    bool find(ll x, ll y){
+        return root(x) == root(y);
+    }
+};
