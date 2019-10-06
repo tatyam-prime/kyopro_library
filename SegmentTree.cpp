@@ -3,16 +3,15 @@ using ll = long long;
 
 template<class T>
 struct SegmentTree{
-    using F = function<T(T, T)>;
+    virtual T f(const T&, const T&) const = 0;
     ll size = 1;
     vector<T> data;
-    const F f;
     const T def_value;
-    SegmentTree(ll n, const T& def_value, const F& f): f(f), def_value(def_value){
+    SegmentTree(ll n, const T& def_value): def_value(def_value){
         while(size < n) size *= 2;
         data.assign(size * 2, def_value);
     }
-    SegmentTree(const vector<T>& v, const T& def_value, const F& f): f(f), def_value(def_value){
+    SegmentTree(const vector<T>& v, const T& def_value): def_value(def_value){
         while(size < v.size()) size *= 2;
         data.assign(size * 2, def_value);
         for(ll i = 0; i < v.size(); i++) data[size + i] = v[i];
@@ -48,19 +47,22 @@ struct SegmentTree{
     }
 };
 template<class T>
-struct SegmentTreeMin : SegmentTree<T>{
-    SegmentTreeMin(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return min(a, b);}){}
-    SegmentTreeMin(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return min(a, b);}){}
+struct RmQ : SegmentTree<T>{
+    T f(const T& a, const T& b) const {return min(a, b);}
+    RmQ(ll n, const T& def_value) : SegmentTree<T>(n, def_value){}
+    RmQ(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value){}
 };
 template<class T>
-struct SegmentTreeMax : SegmentTree<T>{
-    SegmentTreeMax(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return max(a, b);}){}
-    SegmentTreeMax(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return max(a, b);}){}
+struct RMQ : SegmentTree<T>{
+    T f(const T& a, const T& b) const {return max(a, b);}
+    RMQ(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return max(a, b);}){}
+    RMQ(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return max(a, b);}){}
 };
 template<class T>
-struct SegmentTreeSum : SegmentTree<T>{
-    SegmentTreeSum(ll n, const T& def_value = T()) : SegmentTree<T>(n, def_value, [](T a, T b){return a + b;}){}
-    SegmentTreeSum(const vector<T>& v, const T& def_value = T()) : SegmentTree<T>(v, def_value, [](T a, T b){return a + b;}){}
+struct RSQ : SegmentTree<T>{
+    T f(const T& a, const T& b) const {return a + b;}
+    RSQ(ll n, const T& def_value = T()) : SegmentTree<T>(n, def_value){}
+    RSQ(const vector<T>& v, const T& def_value = T()) : SegmentTree<T>(v, def_value){}
 };
 
 
