@@ -28,7 +28,7 @@ struct LazySegmentTree{
         lazy.assign(size * 2, def_lazy);
         for(ll i = 0; i < v.size(); i++) data[size + i] = v[i];
     }
-    void update_down(ll at){
+    void push(ll at){
         if(!at) return;
         ll r = 31 - __builtin_clz(at);
         for(ll i = r; i > 0; i--){
@@ -42,21 +42,21 @@ struct LazySegmentTree{
             }
         }
     }
-    void update_up(ll at){
+    void update(ll at){
         while(at /= 2){
             data[at] = f(data[at * 2], data[at * 2 + 1]);
         }
     }
     T operator[](ll at){
         at += size;
-        update_down(at);
+        push(at);
         return data[at];
     }
     void set(ll at, const T& val){
         at += size;
-        update_down(at);
+        push(at);
         data[at] = val;
-        update_up(at);
+        update(at);
     }
     void range_query(ll l, ll r, const U& val){
         if(l >= r) return;
@@ -72,8 +72,8 @@ struct LazySegmentTree{
                 if(r & 1 && !R) R = r - 1;
             }
         }();
-        update_down(L);
-        update_down(R);
+        push(L);
+        push(R);
         for(ll rank = 0; l < r; l /= 2, r /= 2, rank++){
             if(l & 1){
                 m(rank, data[l], val);
@@ -84,15 +84,15 @@ struct LazySegmentTree{
                 c(lazy[r], val);
             }
         }
-        update_up(L);
-        update_up(R);
+        update(L);
+        update(R);
     }
     T get(ll l, ll r){
         if(l >= r) return def_value;
         T L = def_value, R = def_value;
         l += size; r += size;
-        update_down(l);
-        update_down(r - 1);
+        push(l);
+        push(r - 1);
         for(; l < r; l /= 2, r /= 2){
             if(l & 1) L = f(L, data[l++]);
             if(r & 1) R = f(data[--r], R);
