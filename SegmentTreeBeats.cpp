@@ -16,7 +16,7 @@ struct SegmentTreeBeats{
         beats.first = val;
     }
     static bool c(const T& a, const T& b);
-    static const T def_value, def_lazy, def_beats;
+    static const T def_value, def_beats, identity;
     ll size = 1, rank = 0;
     vector<T> data, lazy;
     vector<Beats> beats;
@@ -26,7 +26,7 @@ struct SegmentTreeBeats{
             rank++;
         }
         data.assign(size * 2, def_value);
-        lazy.assign(size * 2, def_lazy);
+        lazy.assign(size * 2, def_value);
         beats.assign(size * 2, def_value);
         for(ll i = size; --i; ) beats[i] = beats[i * 2] + beats[i * 2 + 1];
     }
@@ -36,7 +36,7 @@ struct SegmentTreeBeats{
             rank++;
         }
         data.assign(size * 2, def_value);
-        lazy.assign(size * 2, def_lazy);
+        lazy.assign(size * 2, def_value);
         beats.assign(size * 2, def_beats);
         for(ll i = 0; i < v.size(); i++){
             data[size + i] = v[i];
@@ -48,7 +48,7 @@ struct SegmentTreeBeats{
         }
     }
     void _push(ll at){
-        if(lazy[at] != def_lazy){
+        if(lazy[at] != def_value){
             if(c(lazy[at], beats[at * 2].first)){
                 m(data[at * 2], beats[at * 2], lazy[at]);
                 lazy[at * 2] = min(lazy[at], lazy[at * 2], [](const T& a, const T& b){ return c(a, b); });
@@ -57,7 +57,7 @@ struct SegmentTreeBeats{
                 m(data[at * 2 + 1], beats[at * 2 + 1], lazy[at]);
                 lazy[at * 2 + 1] = min(lazy[at], lazy[at * 2 + 1], [](const T& a, const T& b){ return c(a, b); });
             }
-            lazy[at] = def_lazy;
+            lazy[at] = def_value;
         }
     }
     void push(ll at){
@@ -110,8 +110,8 @@ struct SegmentTreeBeats{
         }
     }
     T get(ll l, ll r){
-        if(l >= r) return def_value;
-        T L = def_value, R = def_value;
+        if(l >= r) return identity;
+        T L = identity, R = identity;
         l += size; r += size;
         push(l);
         push(r - 1);
@@ -121,11 +121,23 @@ struct SegmentTreeBeats{
         }
         return f(L, R);
     }
+    T get2(ll l, ll r){
+        if(l >= r) return def_beats;
+        T L = def_beats, R = def_beats;
+        l += size; r += size;
+        push(l);
+        push(r - 1);
+        for(; l < r; l /= 2, r /= 2){
+            if(l & 1) L = max(L, beats[l++].first, [](const T& a, const T& b){ return c(a, b); });
+            if(r & 1) R = max(beats[--r].first, R, [](const T& a, const T& b){ return c(a, b); });
+        }
+        return max(L, R, [](const T& a, const T& b){ return c(a, b); });
+    }
     void clear(){
         for(auto& i : data) i = def_value;
     }
 };
-template<class T> const T SegmentTreeBeats<T>::def_value = T();
-template<class T> const T SegmentTreeBeats<T>::def_lazy = numeric_limits<T>::max();
+template<class T> const T SegmentTreeBeats<T>::def_value = numeric_limits<T>::max();
 template<class T> const T SegmentTreeBeats<T>::def_beats = numeric_limits<T>::min();
+template<class T> const T SegmentTreeBeats<T>::identity = T();
 template<class T> bool SegmentTreeBeats<T>::c(const T& a, const T& b){ return a < b; }
