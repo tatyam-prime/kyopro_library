@@ -59,6 +59,7 @@ inline Modint fact(ll n){ if(n < 0) return 0; reserve(n + 1); return fac[n]; }
 inline Modint perm(ll n, ll r){ if(r < 0 || n < r) return 0; reserve(n + 1); return fac[n] * inv[n - r]; }
 inline Modint comb(ll n, ll r){ if(r < 0 || n < r) return 0; reserve(n + 1); return fac[n] * inv[r] * inv[n - r]; }
 inline Modint Mcomb(ll n, ll r){ return comb(n + r - 1, n - 1); } // r個をn部屋に分ける
+inline Modint catalan(ll n){ return fac[n * 2] * inv[n] * inv[n + 1]; }
 
 
 //　exawizards2019_e
