@@ -18,7 +18,7 @@ struct Modint{
     inline constexpr Modint operator--(int){ Modint ans(*this); operator--(); return ans; }
     inline constexpr Modint& operator*=(Modint x){ num = ull(num) * x.num % mod; return *this; }
     inline constexpr Modint& operator/=(Modint x){ return operator*=(x.inv()); }
-    template<class T> constexpr Modint(T x){ x %= mod; if(x < 0) x += mod; num = uint(x); }
+    template<class T> constexpr Modint(T x){ x %= T(mod); if(x < 0) x += mod; num = uint(x); }
     template<class T> inline constexpr Modint operator+(T x) const { return Modint(*this) += x; }
     template<class T> inline constexpr Modint& operator+=(T x){ x %= mod; if(x < 0) x += mod; num += x; if(num >= mod) num -= mod; return *this; }
     template<class T> inline constexpr Modint operator- (T x) const { return Modint(*this) -= x; }
