@@ -23,25 +23,26 @@ struct BiConnected{
     BiConnected(const vector<vector<ll>>& _g): n(_g.size()), _g(_g), low(n), pre(n, LINF), id(n), uf(n){
         dfs(-1, 0);
         cnt = 0;
-        rep(n) if(uf.data[i] < 0) id[i] = cnt++;
+        for(ll i = 0; i < n; i++) if(uf.data[i] < 0) id[i] = cnt++;
         siz.resize(cnt);
-        rep(n){
+        for(ll i = 0; i < n; i++){
             id[i] = id[uf[i]];
             siz[id[i]]++;
         }
         g.resize(cnt);
-        rep(n) each(j, _g[i]) if(id[i] != id[j]) g[id[i]].push_back(id[j]);
+        for(ll i = 0; i < n; i++) for(auto& j : _g[i]) if(id[i] != id[j]) g[id[i]].push_back(id[j]);
     }
     void dfs(ll from, ll at){
         pre[at] = low[at] = cnt++;
-        each(i, _g[at]) if(i != from){
+        for(auto& i : _g[at]) if(i != from){
             if(pre[i] == LINF) dfs(at, i);
-            chmin(low[at], low[i]);
+            low[at] = min(low[at], low[i]);
             if(low[i] != pre[i]) uf.unite(at, i);
         }
     }
-    ll size(){ return cnt; }
-    ll size(ll x){ return siz[x]; }
+    ll size() const { return cnt; }
+    ll size(ll x) const { return siz[x]; }
     vector<ll>& operator[](ll x){ return g[x]; }
-    operator vector<vector<ll>>&(){ return g; }
+    auto begin(){ return g.begin(); }
+    auto end(){ return g.end(); }
 };
