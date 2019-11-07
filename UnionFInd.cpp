@@ -42,14 +42,14 @@ struct PartiallyPersistentUnionFind{
     }
     ll size(ll t, ll x) const {
         x = root(t, x);
-        return -(--lower_bound(hst[x].begin(), hst[x].end(), make_pair(t, 0)))->second;
+        return -(--lower_bound(hst[x].begin(), hst[x].end(), pll{t, 0}))->second;
     }
     // extra
     bool find(ll t, ll x, ll y) const {
         return root(t, x) == root(t, y);
     }
     ll operator()(ll t, ll x) const {
-        return -(--lower_bound(hst[x].begin(), hst[x].end(), make_pair(t, 0)))->second;
+        return -(--lower_bound(hst[x].begin(), hst[x].end(), pll{t, 0}))->second;
     }
 };
 
