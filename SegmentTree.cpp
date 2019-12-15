@@ -4,15 +4,21 @@ using ll = long long;
 template<class T>
 struct SegmentTree{
     virtual T f(const T&, const T&) const = 0;
-    ll size = 1;
+    ll size = 1, rank = 0, expected_size;
     vector<T> data;
     const T def_value;
-    SegmentTree(ll n, const T& def_value): def_value(def_value){
-        while(size < n) size *= 2;
+    SegmentTree(ll n, const T& def_value): def_value(def_value), expected_size(n){
+        while(size < expected_size){
+            size *= 2;
+            rank++;
+        }
         data.assign(size * 2, def_value);
     }
-    SegmentTree(const vector<T>& v, const T& def_value): def_value(def_value){
-        while(size < v.size()) size *= 2;
+    SegmentTree(const vector<T>& v, const T& def_value): def_value(def_value), expected_size(v.size()){
+        while(size < expected_size){
+            size *= 2;
+            rank++;
+        }
         data.assign(size * 2, def_value);
         for(ll i = 0; i < v.size(); i++) data[size + i] = v[i];
         // for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
@@ -41,6 +47,50 @@ struct SegmentTree{
             if(r & 1) R = f(data[--r], R);
         }
         return f(L, R);
+    }
+    template<class F> ll find_last(const F& check, ll l = 0) const { // max x  s.t. check(get(l, x)) == true
+        if(l == expected_size) return expected_size;
+        ll height = 0, at = l + size;
+        T val = def_value;
+        for(; height <= rank; height++) if(at >> height & 1){
+            T val2 = f(val, data[at >> height]);
+            if(check(val2)){
+                at += 1 << height;
+                if(at == size * 2) return expected_size;
+                val = val2;
+            }
+            else break;
+        }
+        for(; height--; ){
+            T val2 = f(val, data[at >> height]);
+            if(check(val2)){
+                at += 1 << height;
+                val = val2;
+            }
+        }
+        return min(at - size, expected_size);
+    }
+    template<class F> ll find_first(const F& check, ll r) const { // min x  s.t. check(get(x, r)) == true
+        if(!r) return 0;
+        ll height = 0, at = r + size;
+        T val = def_value;
+        for(; height <= rank; height++) if(at >> height & 1){
+            T val2 = f(val, data[at >> height ^ 1]);
+            if(check(val2)){
+                at -= 1 << height;
+                if(!at) return 0;
+                val = val2;
+            }
+            else break;
+        }
+        for(; height--; ){
+            T val2 = f(val, data[(at >> height) - 1]);
+            if(check(val2)){
+                at -= 1 << height;
+                val = val2;
+            }
+        }
+        return at - size;
     }
     void clear(){
         for(auto& i : data) i = def_value;
