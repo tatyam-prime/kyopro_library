@@ -5,9 +5,9 @@ struct SegmentTreeBeats{
         ll cnt;
         Beats(const T& a, const T& b = def_beats, ll c = 1): first(a), second(b), cnt(c){}
         Beats operator+(const Beats& a) const {
-            if(first == a.first) return {first, max(second, a.second, [](const T& a, const T& b){ return c(a, b); }), cnt + a.cnt};
-            if(first > a.first) return {first, max(second, a.first, [](const T& a, const T& b){ return c(a, b); }), cnt};
-            return {a.first, max(first, a.second, [](const T& a, const T& b){ return c(a, b); }), a.cnt};
+            if(first == a.first) return {first, max(second, a.second, c), cnt + a.cnt};
+            if(first > a.first) return {first, max(second, a.first, c), cnt};
+            return {a.first, max(first, a.second, c), a.cnt};
         }
     };
     T f(const T& a, const T& b) const { return a + b; }
@@ -51,11 +51,11 @@ struct SegmentTreeBeats{
         if(lazy[at] != def_value){
             if(c(lazy[at], beats[at * 2].first)){
                 m(data[at * 2], beats[at * 2], lazy[at]);
-                lazy[at * 2] = min(lazy[at], lazy[at * 2], [](const T& a, const T& b){ return c(a, b); });
+                lazy[at * 2] = min(lazy[at], lazy[at * 2], c);
             }
             if(c(lazy[at], beats[at * 2 + 1].first)){
                 m(data[at * 2 + 1], beats[at * 2 + 1], lazy[at]);
-                lazy[at * 2 + 1] = min(lazy[at], lazy[at * 2 + 1], [](const T& a, const T& b){ return c(a, b); });
+                lazy[at * 2 + 1] = min(lazy[at], lazy[at * 2 + 1], c);
             }
             lazy[at] = def_value;
         }
@@ -128,10 +128,10 @@ struct SegmentTreeBeats{
         push(l);
         push(r - 1);
         for(; l < r; l /= 2, r /= 2){
-            if(l & 1) L = max(L, beats[l++].first, [](const T& a, const T& b){ return c(a, b); });
-            if(r & 1) R = max(beats[--r].first, R, [](const T& a, const T& b){ return c(a, b); });
+            if(l & 1) L = max(L, beats[l++].first, c);
+            if(r & 1) R = max(beats[--r].first, R, c);
         }
-        return max(L, R, [](const T& a, const T& b){ return c(a, b); });
+        return max(L, R, c);
     }
     void clear(){
         for(auto& i : data) i = def_value;
