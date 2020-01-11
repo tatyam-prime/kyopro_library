@@ -5,9 +5,9 @@ struct SegmentTreeBeats{
         ll cnt;
         Beats(const T& a, const T& b = def_beats, ll c = 1): first_max(a), second_max(b), cnt(c){}
         Beats operator+(const Beats& a) const {
-            if(first_max == a.first_max) return {first_max, max(second_max, a.second_max, c), cnt + a.cnt};
-            if(first_max > a.first_max) return {first_max, max(second_max, a.first_max, c), cnt};
-            return {a.first_max, max(first_max, a.second_max, c), a.cnt};
+            if(c(first_max, a.first_max)) return {a.first_max, max(first_max, a.second_max, c), a.cnt};
+            else if(c(a.first_max, first_max)) return {first_max, max(second_max, a.first_max, c), cnt};
+            return {first_max, max(second_max, a.second_max, c), cnt + a.cnt};
         }
     };
     inline T f(const T& a, const T& b) const { return a + b; }
