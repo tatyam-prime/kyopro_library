@@ -1,21 +1,21 @@
 template<class T>
 struct SegmentTreeBeats{
     struct Beats{
-        T first, second;
+        T first_max, second_max;
         ll cnt;
-        Beats(const T& a, const T& b = def_beats, ll c = 1): first(a), second(b), cnt(c){}
+        Beats(const T& a, const T& b = def_beats, ll c = 1): first_max(a), second_max(b), cnt(c){}
         Beats operator+(const Beats& a) const {
-            if(first == a.first) return {first, max(second, a.second, c), cnt + a.cnt};
-            if(first > a.first) return {first, max(second, a.first, c), cnt};
-            return {a.first, max(first, a.second, c), a.cnt};
+            if(first_max == a.first_max) return {first_max, max(second_max, a.second_max, c), cnt + a.cnt};
+            if(first_max > a.first_max) return {first_max, max(second_max, a.first_max, c), cnt};
+            return {a.first_max, max(first_max, a.second_max, c), a.cnt};
         }
     };
-    T f(const T& a, const T& b) const { return a + b; }
-    void m(T& data, Beats& beats, const T& val){
-        data += beats.cnt * (val - beats.first);
-        beats.first = val;
+    inline T f(const T& a, const T& b) const { return a + b; }
+    inline void m(T& data, Beats& beats, const T& val){
+        data += beats.cnt * (val - beats.first_max);
+        beats.first_max = val;
     }
-    static bool c(const T& a, const T& b);
+    static inline bool c(const T& a, const T& b);
     static const T def_value, def_beats, identity;
     ll size = 1, rank = 0;
     vector<T> data, lazy;
@@ -43,54 +43,54 @@ struct SegmentTreeBeats{
             beats[size + i] = v[i];
         }
         for(ll i = size; --i; ){
-            data[i] = f(data[i * 2] , data[i * 2 + 1]);
+            data[i] = f(data[i * 2], data[i * 2 + 1]);
             beats[i] = beats[i * 2] + beats[i * 2 + 1];
         }
     }
-    void _push(ll at){
+    inline void _push(ll at){
         if(lazy[at] != def_value){
-            if(c(lazy[at], beats[at * 2].first)){
+            if(c(lazy[at], beats[at * 2].first_max)){
                 m(data[at * 2], beats[at * 2], lazy[at]);
                 lazy[at * 2] = min(lazy[at], lazy[at * 2], c);
             }
-            if(c(lazy[at], beats[at * 2 + 1].first)){
+            if(c(lazy[at], beats[at * 2 + 1].first_max)){
                 m(data[at * 2 + 1], beats[at * 2 + 1], lazy[at]);
                 lazy[at * 2 + 1] = min(lazy[at], lazy[at * 2 + 1], c);
             }
             lazy[at] = def_value;
         }
     }
-    void push(ll at){
+    inline void push(ll at){
         if(!at) return;
         for(ll i = 32 - __builtin_clz(at); --i; ) _push(at >> i);
     }
-    void _update(ll at){
+    inline void _update(ll at){
         data[at] = f(data[at * 2], data[at * 2 + 1]);
         beats[at] = beats[at * 2] + beats[at * 2 + 1];
     }
-    void update(ll at){
+    inline void update(ll at){
         while(at /= 2) _update(at);
     }
-    T operator[](ll at){
+    inline T operator[](ll at){
         at += size;
         push(at);
         return data[at];
     }
-    void set(ll at, const T& val){
+    inline void set(ll at, const T& val){
         at += size;
         push(at);
         data[at] = val;
         beats[at] = val;
         update(at);
     }
-    void range_query(ll l, ll r, const T& val){
+    inline void chmin(ll l, ll r, const T& val){
         l += size;
         r += size;
         ll at = 1, rnk = rank;
         while(at){
-            if(l < (at + 1) << rnk && at << rnk < r && c(val, beats[at].first)){
+            if(l < (at + 1) << rnk && at << rnk < r && c(val, beats[at].first_max)){
                 if(at < size) _push(at);
-                if(l <= at << rnk && (at + 1) << rnk <= r && c(beats[at].second, val) && c(val, beats[at].first)){
+                if(l <= at << rnk && (at + 1) << rnk <= r && c(beats[at].second_max, val) && c(val, beats[at].first_max)){
                     m(data[at], beats[at], val);
                     lazy[at] = val;
                 }
@@ -109,7 +109,7 @@ struct SegmentTreeBeats{
             at++;
         }
     }
-    T get(ll l, ll r){
+    T get_f(ll l, ll r){
         if(l >= r) return identity;
         T L = identity, R = identity;
         l += size; r += size;
@@ -121,20 +121,17 @@ struct SegmentTreeBeats{
         }
         return f(L, R);
     }
-    T get2(ll l, ll r){
+    T get_max(ll l, ll r){
         if(l >= r) return def_beats;
         T L = def_beats, R = def_beats;
         l += size; r += size;
         push(l);
         push(r - 1);
         for(; l < r; l /= 2, r /= 2){
-            if(l & 1) L = max(L, beats[l++].first, c);
-            if(r & 1) R = max(beats[--r].first, R, c);
+            if(l & 1) L = max(L, beats[l++].first_max, c);
+            if(r & 1) R = max(beats[--r].first_max, R, c);
         }
         return max(L, R, c);
-    }
-    void clear(){
-        for(auto& i : data) i = def_value;
     }
 };
 template<class T> const T SegmentTreeBeats<T>::def_value = numeric_limits<T>::max();
