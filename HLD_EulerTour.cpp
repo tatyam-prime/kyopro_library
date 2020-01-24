@@ -35,7 +35,7 @@ struct HLDecomposition{
             b = light_root[b];
         }
     }
-    template<class T> void path_node(ll a, ll b, T f){
+    template<class T> void path_node(ll a, ll b, const T& f){
         a = index[a]; b = index[b];
         while(true){
             if(a > b) swap(a, b);
@@ -47,7 +47,7 @@ struct HLDecomposition{
             b = light_root[b];
         }
     }
-    template<class T> void path_edge(ll a, ll b, T f){
+    template<class T> void path_edge(ll a, ll b, const T& f){
         a = index[a]; b = index[b];
         while(true){
             if(a > b) swap(a, b);
@@ -59,11 +59,11 @@ struct HLDecomposition{
             b = light_root[b];
         }
     }
-    template<class T> void subtree_node(ll a, T f){
+    template<class T> void subtree_node(ll a, const T& f){
         a = index[a];
         f(a, a + siz[a]);
     }
-    template<class T> void subtree_edge(ll a, T f){
+    template<class T> void subtree_edge(ll a, const T& f){
         a = index[a];
         f(a, a + siz[a] - 1);
     }
