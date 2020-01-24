@@ -31,7 +31,7 @@ struct HLDecomposition{
         a = index[a]; b = index[b];
         while(true){
             if(a > b) swap(a, b);
-            if(light_root[a] == light_root[b]) return invex[a];
+            if(heavy_root[a] == heavy_root[b]) return invex[a];
             b = light_root[b];
         }
     }
@@ -39,7 +39,7 @@ struct HLDecomposition{
         a = index[a]; b = index[b];
         while(true){
             if(a > b) swap(a, b);
-            if(light_root[a] == light_root[b]){
+            if(heavy_root[a] == heavy_root[b]){
                 f(a, b + 1);
                 return;
             }
@@ -51,7 +51,7 @@ struct HLDecomposition{
         a = index[a]; b = index[b];
         while(true){
             if(a > b) swap(a, b);
-            if(light_root[a] == light_root[b]){
+            if(heavy_root[a] == heavy_root[b]){
                 f(a, b);
                 return;
             }
@@ -68,6 +68,3 @@ struct HLDecomposition{
         f(a, a + siz[a] - 1);
     }
 };
-
-
-// https://onlinejudge.u-aizu.ac.jp/status/users/tatyam/submissions/1/GRL_5_E/judge/4127643/C++14
