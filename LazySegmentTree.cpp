@@ -58,20 +58,11 @@ struct LazySegmentTree{
         data[at] = val;
         update(at);
     }
-    void range_query(ll l, ll r, const U& val){
+    void query(ll l, ll r, const U& val){
         if(l >= r) return;
         l += size;
         r += size;
-        ll L = 0, R = 0;
-        [&L, &R, l, r]() mutable {
-            for(; l < r; l /= 2, r /= 2){
-                if(l & 1){
-                    if(!L) L = l;
-                    l++;
-                }
-                if(r & 1 && !R) R = r - 1;
-            }
-        }();
+        ll L = l >> __builtin_ctz(l), R = (r >> __builtin_ctz(r)) - 1;
         push(L);
         push(R);
         for(ll rank = 0; l < r; l /= 2, r /= 2, rank++){
@@ -106,9 +97,9 @@ struct LazySegmentTree{
 template<class T>
 struct RAQRSQ : LazySegmentTree<T, T>{
     using Base = LazySegmentTree<T, T>;
-    T f(const T& a, const T& b){return a + b;}
-    void m(ll rank, T& x, const T& val){x += val << rank;}
-    void c(T& a, const T& b){a += b;}
+    T f(const T& a, const T& b){ return a + b; }
+    void m(ll rank, T& x, const T& val){ x += val << rank; }
+    void c(T& a, const T& b){ a += b; }
     RAQRSQ(ll n, const T& def_value = T()) : Base(n, def_value, def_value){}
     RAQRSQ(const vector<T>& v, const T& def_value = T()) : Base(v, def_value, def_value){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
@@ -117,9 +108,9 @@ struct RAQRSQ : LazySegmentTree<T, T>{
 template<class T>
 struct RUQRmQ : LazySegmentTree<T, T>{
     using Base = LazySegmentTree<T, T>;
-    T f(const T& a, const T& b){return min(a, b);}
-    void m(ll rank, T& x, const T& val){x = val;}
-    void c(T& a, const T& b){a = b;}
+    T f(const T& a, const T& b){ return min(a, b); }
+    void m(ll rank, T& x, const T& val){ x = val; }
+    void c(T& a, const T& b){ a = b; }
     RUQRmQ(ll n, const T& def_value, const T& def_lazy = numeric_limits<T>::max()) : Base(n, def_value, def_lazy){}
     RUQRmQ(const vector<T>& v, const T& def_value, const T& def_lazy = numeric_limits<T>::max()) : Base(v, def_value, def_lazy){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
@@ -128,9 +119,9 @@ struct RUQRmQ : LazySegmentTree<T, T>{
 template<class T>
 struct RAQRmQ : LazySegmentTree<T, T>{
     using Base = LazySegmentTree<T, T>;
-    T f(const T& a, const T& b){return min(a, b);}
-    void m(ll rank, T& x, const T& val){x += val;}
-    void c(T& a, const T& b){a += b;}
+    T f(const T& a, const T& b){ return min(a, b); }
+    void m(ll rank, T& x, const T& val){ x += val; }
+    void c(T& a, const T& b){ a += b; }
     RAQRmQ(ll n, const T& def_value, const T& def_lazy = T()) : Base(n, def_value, def_lazy){}
     RAQRmQ(const vector<T>& v, const T& def_value, const T& def_lazy = T()) : Base(v, def_value, def_lazy){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
@@ -139,9 +130,9 @@ struct RAQRmQ : LazySegmentTree<T, T>{
 template<class T>
 struct RUQRSQ : LazySegmentTree<T, T>{
     using Base = LazySegmentTree<T, T>;
-    T f(const T& a, const T& b){return a + b;}
-    void m(ll rank, T& x, const T& val){x = val << rank;}
-    void c(T& a, const T& b){a = b;}
+    T f(const T& a, const T& b){ return a + b; }
+    void m(ll rank, T& x, const T& val){ x = val << rank; }
+    void c(T& a, const T& b){ a = b; }
     RUQRSQ(ll n, const T& def_value = T(), const T& def_lazy = numeric_limits<T>::max()) : Base(n, def_value, def_lazy){}
     RUQRSQ(const vector<T>& v, const T& def_value = T(), const T& def_lazy = numeric_limits<T>::max()) : Base(v, def_value, def_lazy){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
