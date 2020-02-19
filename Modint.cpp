@@ -20,7 +20,7 @@ struct Modint{
     inline constexpr Modint& operator/=(Modint x){ return operator*=(x.inv()); }
     template<class T> constexpr Modint(T x){
         using U = typename conditional<sizeof(T) >= 4, T, int>::type;
-        U y = x; y %= U(mod); if(y < 0) y += mod; num = uint(y);
+        U y = x; y %= U(mod); if(y < 0) y += mod; num = unsigned(y);
     }
     template<class T> inline constexpr Modint operator+(T x) const { return Modint(*this) += x; }
     template<class T> inline constexpr Modint& operator+=(T x){ x %= mod; if(x < 0) x += mod; num += x; if(num >= mod) num -= mod; return *this; }
