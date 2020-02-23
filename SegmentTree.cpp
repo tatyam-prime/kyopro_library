@@ -100,8 +100,8 @@ template<class T>
 struct RmQ : SegmentTree<T>{
     using Base = SegmentTree<T>;
     T f(const T& a, const T& b) const {return min(a, b);}
-    RmQ(ll n, const T& def_value) : SegmentTree<T>(n, def_value){}
-    RmQ(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value){
+    RmQ(ll n, const T& def_value) : Base(n, def_value){}
+    RmQ(const vector<T>& v, const T& def_value) : Base(v, def_value){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
     }
 };
@@ -109,8 +109,8 @@ template<class T>
 struct RMQ : SegmentTree<T>{
     using Base = SegmentTree<T>;
     T f(const T& a, const T& b) const {return max(a, b);}
-    RMQ(ll n, const T& def_value) : SegmentTree<T>(n, def_value, [](T a, T b){return max(a, b);}){}
-    RMQ(const vector<T>& v, const T& def_value) : SegmentTree<T>(v, def_value, [](T a, T b){return max(a, b);}){
+    RMQ(ll n, const T& def_value) : Base(n, def_value){}
+    RMQ(const vector<T>& v, const T& def_value) : Base(v, def_value){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
     }
 };
@@ -118,8 +118,8 @@ template<class T>
 struct RSQ : SegmentTree<T>{
     using Base = SegmentTree<T>;
     T f(const T& a, const T& b) const {return a + b;}
-    RSQ(ll n, const T& def_value = T()) : SegmentTree<T>(n, def_value){}
-    RSQ(const vector<T>& v, const T& def_value = T()) : SegmentTree<T>(v, def_value){
+    RSQ(ll n, const T& def_value = T()) : Base(n, def_value){}
+    RSQ(const vector<T>& v, const T& def_value = T()) : Base(v, def_value){
         for(ll i = Base::size; --i;) Base::data[i] = f(Base::data[i * 2], Base::data[i * 2 + 1]);
     }
 };
