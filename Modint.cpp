@@ -47,8 +47,12 @@ inline void reserve(ll a){
     for(ll i = inv.size() - 1; !inv[i - 1]; i--) inv[i - 1] = inv[i] * i;
 }
 inline Modint fact(ll n){ if(n < 0) return 0; reserve(n + 1); return fac[n]; }
-inline Modint perm(ll n, ll r){ if(r < 0 || n < r) return 0; reserve(n + 1); return fac[n] * inv[n - r]; }
-inline Modint comb(ll n, ll r){ if(r < 0 || n < r) return 0; reserve(n + 1); return fac[n] * inv[r] * inv[n - r]; }
+inline Modint perm(ll n, ll r){
+    if(r < 0 || n < r) return 0;
+    if(n >> 24){ Modint ans = 1; for(ll i = 0; i < r; i++) ans *= n--; return ans; }
+    reserve(n + 1); return fac[n] * inv[n - r];
+}
+inline Modint comb(ll n, ll r){ if(r < 0 || n < r) return 0; reserve(r + 1); return perm(n, r) * inv[r]; }
 inline Modint Mcomb(ll n, ll r){ return comb(n + r - 1, n - 1); } // r個をn部屋に分ける
 inline Modint catalan(ll n){ if(n < 0) return 0; reserve(n * 2 + 1); return fac[n * 2] * inv[n] * inv[n + 1]; }
 
