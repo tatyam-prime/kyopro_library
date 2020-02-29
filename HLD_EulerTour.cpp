@@ -51,6 +51,7 @@ struct HLDecomposition{
         a = index[a]; b = index[b];
         while(true){
             if(a > b) swap(a, b);
+            if(a == b) return;
             if(heavy_root[a] == heavy_root[b]){
                 f(a, b);
                 return;
