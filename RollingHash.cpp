@@ -44,7 +44,7 @@ struct RollingHash {
         return ret;
     }
     
-    ull connect(ull h1, ll h2, ll h2len) const {
+    ull connect(ull h1, ull h2, ll h2len) const {
         ull ret = mul(h1, power[h2len]) + h2;
         if(ret >= mod) ret -= mod;
         return ret;
