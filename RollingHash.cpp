@@ -80,6 +80,7 @@ struct RollingHash {
 
 /*
 
+mod 2^61 - 1 の RollingHash です  結構強いです
 名前の衝突がある場合は namespace で囲うと良いです
 bases : 256 以上の原始根を並べています  ランダムに選んで位数が小さくなったら嫌じゃないですか？
 hashed[i] : s[0, i) のハッシュ結果  hashed[i + 1] = s[i] + s[i-1] * power[1] + s[i-2] * power[2] + ...
