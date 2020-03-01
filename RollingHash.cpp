@@ -9,7 +9,7 @@ const ull mod = 0x1fffffffffffffff, base = bases[chrono::duration_cast<chrono::m
 struct RollingHash {
     vector<ull> hashed, power;
     
-    constexpr ull mask(ll a){ return (1ull << a) - 1; }
+    static constexpr ull mask(ll a){ return (1ull << a) - 1; }
     
     inline ull mul(ull a, ull b) const {
         //*
