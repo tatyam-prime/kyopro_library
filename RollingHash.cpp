@@ -75,3 +75,18 @@ struct RollingHash {
         return low;
     }
 };
+
+
+
+/*
+
+名前の衝突がある場合は namespace で囲うと良いです
+bases : 256 以上の原始根を並べています  ランダムに選んで位数が小さくなったら嫌じゃないですか？
+hashed[i] : s[0, i) のハッシュ結果  hashed[i + 1] = s[i] + s[i-1] * power[1] + s[i-2] * power[2] + ...
+power[i] : base ** i
+get(l, r) : s[l, r) のハッシュ結果  s[r-1] + s[r-2] * power[1] + ... + s[l] * power[r - l + 1]
+connect(h1, h2, h2len) : 2つのハッシュ結果からそれらを繋げたときのハッシュ結果を得ます
+connect(s) : コンストラクタで渡した文字列に s を繋げたことにします  過去必要になったやつ
+LCP(...) : Longest Common Prefix の長さ
+
+*/
