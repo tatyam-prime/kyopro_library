@@ -4,7 +4,7 @@ using ull = unsigned long long;
 
 constexpr unsigned mod = 1000000007;
 struct Modint{
-    uint num = 0;
+    unsigned num = 0;
     constexpr Modint() noexcept {}
     constexpr Modint(const Modint &x) noexcept : num(x.num){}
     inline constexpr operator ll() const noexcept { return num; }
@@ -20,7 +20,7 @@ struct Modint{
     inline constexpr Modint& operator/=(Modint x) noexcept { return operator*=(x.inv()); }
     template<class T> constexpr Modint(T x) noexcept {
         using U = typename conditional<sizeof(T) >= 4, T, int>::type;
-        U y = x; y %= U(mod); if(y < 0) y += mod; num = uint(y);
+        U y = x; y %= U(mod); if(y < 0) y += mod; num = unsigned(y);
     }
     template<class T> inline constexpr Modint operator+(T x) const noexcept { return Modint(*this) += x; }
     template<class T> inline constexpr Modint& operator+=(T x) noexcept { return operator+=(Modint(x)); }
@@ -34,7 +34,7 @@ struct Modint{
     static inline constexpr ll extgcd(ll a, ll b, ll &x, ll &y) noexcept { ll g = a; x = 1; y = 0; if(b){ g = extgcd(b, a % b, y, x); y -= a / b * x; } return g; }
     inline constexpr Modint pow(ull x) const noexcept { Modint ans = 1, cnt = *this; while(x){ if(x & 1) ans *= cnt; cnt *= cnt; x /= 2; } return ans; }
 };
-std::istream& operator>>(std::istream& is, Modint& x){ ll a; in(a); x = a; return is; }
+std::istream& operator>>(std::istream& is, Modint& x) noexcept { ll a; cin >> a; x = a; return is; }
 inline constexpr Modint operator""_M(ull x) noexcept { return Modint(x); }
 std::vector<Modint> fac(1, 1), inv(1, 1);
 inline void reserve(ll a){
