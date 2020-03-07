@@ -53,13 +53,6 @@ template<class T> inline void print(const T &a){ cout << a; }
 inline int out(){ putchar('\n'); return 0; }
 template<class T> inline int out(const T &t){ print(t); putchar('\n'); return 0; }
 template<class Head, class... Tail> inline int out(const Head &head, const Tail&... tail){ print(head); putchar(' '); out(tail...); return 0; }
-#ifdef DEBUG
-inline void err(){ putchar('\n'); }
-template<class T> inline void err(const T &t){ print(t); putchar('\n'); }
-template<class Head, class... Tail> inline void err(const Head &head, const Tail&... tail){ print(head); putchar(' '); out(tail...); }
-#else
-template<class... T> inline void err(const T&... t){}
-#endif
 inline int first(bool i = true){ return out(i?"first":"second"); }
 inline int yes(bool i = true){ return out(i?"yes":"no"); }
 inline int Yes(bool i = true){ return out(i?"Yes":"No"); }
