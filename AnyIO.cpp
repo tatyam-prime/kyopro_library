@@ -8,7 +8,7 @@ inline void scan(unsigned &a){ scanf("%u", &a); }
 inline void scan(long &a){ scanf("%ld", &a); }
 inline void scan(long long &a){ scanf("%lld", &a); }
 inline void scan(unsigned long long &a){ scanf("%llu", &a); }
-inline void scan(char &a){ cin >> a; }
+inline void scan(char &a){ do{ a = getchar(); }while(a == ' ' || a = '\n'); }
 inline void scan(float &a){ scanf("%f", &a); }
 inline void scan(double &a){ scanf("%lf", &a); }
 inline void scan(long double &a){ scanf("%Lf", &a); }
