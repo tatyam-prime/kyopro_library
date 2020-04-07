@@ -1,10 +1,10 @@
+
 struct WeightedEdge{
     ll to, cost;
     WeightedEdge(){}
     WeightedEdge(ll to, ll cost): to(to), cost(cost){}
     operator ll() const { return to; }
 };
-
 struct WeightedGraph{
     using E = WeightedEdge;
     vector<vector<E>> g;
@@ -36,7 +36,6 @@ struct UnWeightedEdge{
     UnWeightedEdge(ll to): to(to){}
     operator ll() const { return to; }
 };
-
 struct UnWeightedGraph{
     using E = UnWeightedEdge;
     vector<vector<E>> g;
