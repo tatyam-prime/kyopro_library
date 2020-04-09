@@ -4,9 +4,9 @@ using ll = long long;
 template<class T>
 struct SegmentTree{
     virtual T f(const T&, const T&) const = 0;
+    const T def_value;
     ll size = 1, rank = 0, expected_size;
     vector<T> data;
-    const T def_value;
     SegmentTree(ll n, const T& def_value): def_value(def_value), expected_size(n){
         while(size < expected_size){
             size *= 2;
@@ -65,6 +65,7 @@ struct SegmentTree{
             T val2 = f(val, data[at >> height]);
             if(check(val2)){
                 at += 1 << height;
+                if(at == size * 2) return expected_size;
                 val = val2;
             }
         }
@@ -78,7 +79,7 @@ struct SegmentTree{
             T val2 = f(val, data[at >> height ^ 1]);
             if(check(val2)){
                 at -= 1 << height;
-                if(!at) return 0;
+                if(at == size) return 0;
                 val = val2;
             }
             else break;
@@ -87,6 +88,7 @@ struct SegmentTree{
             T val2 = f(val, data[(at >> height) - 1]);
             if(check(val2)){
                 at -= 1 << height;
+                if(at == size) return 0;
                 val = val2;
             }
         }
