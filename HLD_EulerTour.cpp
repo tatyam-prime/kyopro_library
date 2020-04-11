@@ -69,3 +69,32 @@ struct HLDecomposition{
         f(a, a + siz[a] - 1);
     }
 };
+
+
+
+// https://www.hackerrank.com/contests/yfkpo3-1/challenges/bananas-multiplier-hard/problem
+
+int main(){
+    ll n;
+    cin >> n;
+    vector<array<ll, 3>> edge(n - 1);
+    vector<vector<ll>> g(n);
+    for(auto& i : edge){
+        i[0]--; i[1]--;
+        g[i[0]].push_back(i[1]);
+        g[i[1]].push_back(i[0]);
+    }
+    HLDecomposition hld(g);
+    SegmentTree<Modint> seg(n);
+    for(auto& i : edge) hld.path_edge(i[0], i[1], [&](ll l, ll r){ seg.set(l, i[2]); });
+    ll q;
+    cin >> q;
+    for(ll i = 0; i < q; i++){
+        ll a, b, c;
+        cin >> a >> b >> c;
+        a--; b--;
+        Modint ans = c;
+        hld.path_edge(a, b, [&](ll l, ll r){ ans *= seg.get(l, r); });
+        cout << ans << '\n';
+    }
+}
