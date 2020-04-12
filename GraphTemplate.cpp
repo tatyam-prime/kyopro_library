@@ -16,6 +16,13 @@ struct WeightedGraph{
     ll size() const { return g.size(); }
     const vector<E>& operator[](ll at) const { return g[at]; }
     operator const vector<vector<E>>&() const { return g; }
+    void add_edge(ll a, ll b, ll cost){
+        g[a].emplace_back(b, cost);
+        g[b].emplace_back(a, cost);
+    }
+    void add_directed_edge(ll from, ll to, ll cost){
+        g[from].emplace_back(to, cost);
+    }
     template<ll start_index = 1, bool directed = false> void input_graph(ll m){
         while(m--){
             ll a, b, c;
@@ -47,6 +54,13 @@ struct UnWeightedGraph{
     ll size() const { return g.size(); }
     const vector<E>& operator[](ll at) const { return g[at]; }
     operator const vector<vector<E>>&() const { return g; }
+    void add_edge(ll a, ll b){
+        g[a].emplace_back(b);
+        g[b].emplace_back(a);
+    }
+    void add_directed_edge(ll from, ll to){
+        g[from].emplace_back(to);
+    }
     template<ll start_index = 1, bool directed = false> void input_graph(ll m){
         while(m--){
             ll a, b;
