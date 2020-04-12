@@ -14,13 +14,13 @@ struct UnionFind{
     ll size(ll a){return -data[root(a)];}
     ll operator[](ll a){return root(a);}
 };
-struct BiConnected{
+template<class Graph> struct BiConnected{
     ll cnt = 0, n;
-    const vector<vector<ll>>& _g;
-    vector<vector<ll>> g;
+    const Graph& _g;
+    Graph g;
     vector<ll> low, pre, id, siz;
     UnionFind uf;
-    BiConnected(const vector<vector<ll>>& _g): n(_g.size()), _g(_g), low(n), pre(n, LINF), id(n), uf(n){
+    BiConnected(const Graph& _g): n(_g.size()), _g(_g), low(n), pre(n, LINF), id(n), uf(n){
         dfs(-1, 0);
         cnt = 0;
         for(ll i = 0; i < n; i++) if(uf.data[i] < 0) id[i] = cnt++;
