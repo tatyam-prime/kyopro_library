@@ -8,6 +8,7 @@ struct WeightedEdge{
 struct WeightedGraph{
     using E = WeightedEdge;
     vector<vector<E>> g;
+    WeightedGraph(){}
     WeightedGraph(ll n): g(n){}
     vector<E>& operator[](ll at){ return g[at]; }
     operator vector<vector<E>>&(){ return g; }
@@ -16,6 +17,7 @@ struct WeightedGraph{
     ll size() const { return g.size(); }
     const vector<E>& operator[](ll at) const { return g[at]; }
     operator const vector<vector<E>>&() const { return g; }
+    void resize(ll a){ g.resize(a); }
     void add_edge(ll a, ll b, ll cost){
         g[a].emplace_back(b, cost);
         g[b].emplace_back(a, cost);
@@ -46,6 +48,7 @@ struct UnWeightedEdge{
 struct UnWeightedGraph{
     using E = UnWeightedEdge;
     vector<vector<E>> g;
+    UnWeightedGraph(){}
     UnWeightedGraph(ll n): g(n){}
     vector<E>& operator[](ll at){ return g[at]; }
     operator vector<vector<E>>&(){ return g; }
@@ -54,6 +57,7 @@ struct UnWeightedGraph{
     ll size() const { return g.size(); }
     const vector<E>& operator[](ll at) const { return g[at]; }
     operator const vector<vector<E>>&() const { return g; }
+    void resize(ll a){ g.resize(a); }
     void add_edge(ll a, ll b){
         g[a].emplace_back(b);
         g[b].emplace_back(a);
