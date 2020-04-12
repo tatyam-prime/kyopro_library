@@ -1,8 +1,9 @@
-struct HLDecomposition{
+
+template<class Graph> struct HLDecomposition{
     ll n;
-    const vector<vector<ll>>& g;
+    const Graph& g;
     vector<ll> index, invex, light_root, heavy_root, siz;
-    HLDecomposition(const vector<vector<ll>>& g, ll root = 0): n(g.size()), g(g), index(n), invex(n), light_root(n), heavy_root(n), siz(n, 1){
+    HLDecomposition(const Graph& g, ll root = 0): n(g.size()), g(g), index(n), invex(n), light_root(n), heavy_root(n), siz(n, 1){
         dfs(-1, root);
         n = 0;
         dfs2(-1, root, -1, 0);
@@ -78,13 +79,10 @@ int main(){
     ll n;
     cin >> n;
     vector<array<ll, 3>> edge(n - 1);
-    vector<vector<ll>> g(n);
-    for(auto& i : edge){
-        i[0]--; i[1]--;
-        g[i[0]].push_back(i[1]);
-        g[i[1]].push_back(i[0]);
-    }
-    HLDecomposition hld(g);
+    for(auto& i : edge) cin >> i[0] >> i[1] >> i[2];
+    UnWeightedGraph g(n);
+    for(auto& i : edge) g.add_edge(--i[0], --i[1]);
+    HLDecomposition<UnWeightedGraph> hld(g);
     SegmentTree<Modint> seg(n);
     for(auto& i : edge) hld.path_edge(i[0], i[1], [&](ll l, ll r){ seg.set(l, i[2]); });
     ll q;
