@@ -4,7 +4,7 @@ using ull = unsigned long long;
 
 constexpr unsigned mod = 1000000007;
 struct Modint{
-    unsigned num;
+    unsigned num = 0;
     constexpr Modint() noexcept {}
     constexpr Modint(const Modint &x) noexcept : num(x.num){}
     inline constexpr operator ll() const noexcept { return num; }
