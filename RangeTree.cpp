@@ -1,6 +1,11 @@
+using ll = int64_t;
+using pll = pair<ll, ll>;
+const LINF = 0x1fffffffffffffff;
+
+
 struct RangeSet{
     vector<vector<ll>> data;
-    vector<ll>x;
+    vector<ll> x;
     ll siz_x = 1;
     RangeSet(vector<pll> a){
         sort(a.begin(), a.end());
@@ -19,7 +24,7 @@ struct RangeSet{
             merge(data[i * 2].begin(), data[i * 2].end(), data[i * 2 + 1].begin(), data[i * 2 + 1].end(), data[i].begin());
         }
     }
-    ll count(ll x1, ll x2, ll y1, ll y2) const {
+    ll count(ll x1, ll x2, ll y1, ll y2) const { // [x1, x2) × [y1, y2)
         ll l = lower_bound(x.begin(), x.end(), x1) - x.begin(), r = lower_bound(x.begin(), x.end(), x2) - x.begin();
         l += siz_x; r += siz_x;
         ll ans = 0;
