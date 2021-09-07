@@ -53,29 +53,31 @@ struct PartiallyPersistentUnionFind{
 
 
 struct UnionFindWithPotential{
-    vector<ll> data, diff;
+    vector<ll> data;
+    vector<T> diff;
     UnionFindWithPotential(ll n): data(n, -1), diff(n){}
     ll root(ll x){
         if (data[x] < 0) return x;
         ll r = root(data[x]);
-        diff[x] += diff[data[x]];
+        diff[x] = diff[x] + diff[data[x]];
         return data[x] = r;
     }
-    ll dist(ll x){
+    T dist(ll x){
         root(x);
         return diff[x];
     }
-    ll dist(ll x, ll y){
+    T dist(ll x, ll y){
         return dist(y) - dist(x);
     }
-    ll unite(ll x, ll y, ll w){
-        w += dist(x); w -= dist(y);
+    ll unite(ll x, ll y, T w){
+        w = w + dist(x) - dist(y);
         ll rx = root(x), ry = root(y);
-        if(rx == ry) return dist(x, y) == w ? 1 : -1;
+        if(rx == ry) return w == 1 ? 1 : -1;
         if(data[rx] > data[ry]){
-            swap(x, y);
+            swap(rx, ry);
             w = -w;
         }
+        data[rx] += data[ry];
         data[ry] = rx;
         diff[ry] = w;
         return 0;
