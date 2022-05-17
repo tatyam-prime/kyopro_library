@@ -5,12 +5,11 @@ using ll = long long;
 using ull = unsigned long long;
 
 
-const unsigned bases[64] = {257,262,266,275,276,281,285,290,296,302,306,310,311,313,323,333,344,345,350,357,367,370,373,402,423,425,431,440,442,443,454,457,458,462,471,478,481,487,489,492,499,501,502,503,506,514,524,532,535,541,550,552,557,559,562,563,567,570,571,580,592,597,604,612};
-const ull mod = 0x1fffffffffffffff, base = bases[chrono::duration_cast<chrono::microseconds>(chrono::system_clock::now().time_since_epoch()).count() & 63];
+const ull mod = 0x1fffffffffffffff, base = chrono::duration_cast<chrono::microseconds>(chrono::system_clock::now().time_since_epoch()).count();
 struct RollingHash {
     vector<ull> hashed, power;
     
-    static constexpr ull mask(ll a){ return (1ull << a) - 1; }
+    static constexpr ull mask(ll a){ return (1ULL << a) - 1; }
     
     inline ull mul(ull a, ull b) const {
         //*
@@ -82,7 +81,6 @@ struct RollingHash {
 
 mod 2^61 - 1 の RollingHash です  結構強いです
 名前の衝突がある場合は namespace で囲うと良いです
-bases : 256 以上の原始根を並べています  特に意味はないです
 hashed[i] : s[0, i) のハッシュ結果  hashed[i + 1] = s[i] + s[i-1] * power[1] + s[i-2] * power[2] + ...
 power[i] : base ** i
 get(l, r) : s[l, r) のハッシュ結果  s[r-1] + s[r-2] * power[1] + ... + s[l] * power[r - l + 1]
