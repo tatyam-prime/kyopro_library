@@ -85,7 +85,7 @@ struct Matrix{
                 ans = -ans;
                 break;
             }
-            assert("this matrix is not regular." && A[i][i] != 0);
+            if(A[i][i] == 0) return 0;
             ans *= A[i][i];
             const T x = T{1} / A[i][i];
             for(size_t k = i; k < N; k++) A[i][k] *= x;
