@@ -5,6 +5,9 @@ struct Matrix{
         for(auto& i : a) i.fill(T{});
     }
     Matrix(const array<array<T, M>, N>& a): a(a){}
+    Matrix(const vector<vector<T>>& b){
+        for(size_t i = 0; i < b.size(); i++) for(size_t j = 0; j < b[i].size(); j++) a[i][j] = b[i][j];
+    }
     static Matrix e(){
         static_assert(N == M, "this matrix is not square.");
         Matrix a;
