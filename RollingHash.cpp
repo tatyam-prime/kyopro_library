@@ -5,7 +5,7 @@ using ll = long long;
 using ull = unsigned long long;
 
 
-const ull mod = 0x1fffffffffffffff, base = chrono::duration_cast<chrono::microseconds>(chrono::system_clock::now().time_since_epoch()).count();
+const ull mod = 0x1fffffffffffffff, base = chrono::duration_cast<chrono::microseconds>(chrono::system_clock::now().time_since_epoch()).count() % mod;
 struct RollingHash {
     vector<ull> hashed, power;
     
