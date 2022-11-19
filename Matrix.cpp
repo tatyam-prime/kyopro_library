@@ -41,8 +41,7 @@ struct Matrix{
         for(size_t i = 0; i < N; i++) for(size_t j = 0; j < M; j++) for(size_t k = 0; k < K; k++) c[i][k] += a[i][j] * b[j][k];
         return c;
     }
-    Matrix& operator*=(const Matrix& b){
-        static_assert(N == M, "this matrix is not square.");
+    Matrix& operator*=(const Matrix<T, M, M>& b){
         return *this = a * b;
     }
     Matrix pow(long long r) const {
