@@ -42,7 +42,7 @@ struct Matrix{
         return c;
     }
     Matrix& operator*=(const Matrix<T, M, M>& b){
-        return *this = a * b;
+        return *this = *this * b;
     }
     Matrix pow(long long r) const {
         if(r == 0) return e();
@@ -140,7 +140,7 @@ struct Matrix{
         return c;
     }
     Matrix& operator*=(const Matrix& b){
-        return *this = a * b;
+        return *this = *this * b;
     }
     Matrix pow(long long r) const {
         if(r == 0) return e(N);
