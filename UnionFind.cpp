@@ -72,7 +72,7 @@ struct UnionFindWithPotential{
     ll unite(ll x, ll y, T w){
         w = w + dist(x) - dist(y);
         ll rx = root(x), ry = root(y);
-        if(rx == ry) return w == 1 ? 1 : -1;
+        if(rx == ry) return w == 0 ? 0 : -1;
         if(data[rx] > data[ry]){
             swap(rx, ry);
             w = -w;
@@ -80,7 +80,7 @@ struct UnionFindWithPotential{
         data[rx] += data[ry];
         data[ry] = rx;
         diff[ry] = w;
-        return 0;
+        return 1;
     }
     bool find(ll x, ll y){
         return root(x) == root(y);
