@@ -1,4 +1,6 @@
-struct fast_graph{
+// compressed sparse row format
+
+class fast_graph{
     using I = vector<int>::iterator;
     struct edges{
         I l, r;
@@ -6,13 +8,14 @@ struct fast_graph{
         size_t size() const { return r - l; }
         auto begin() const { return l; }
         auto end() const { return r; }
-        int operator[](ssize_t i) const { return l[i]; }
+        int operator[](size_t i) const { return l[i]; }
     };
     
     vector<int> mem;
     vector<edges> g;
-    fast_graph(){}
-    fast_graph(int n, vector<pair<int, int>> edge): g(n), mem(edge.size() * 2){
+public:
+    fast_graph() {}
+    fast_graph(int n, vector<pair<int, int>> edge) : g(n), mem(edge.size() * 2) {
         for(auto [a, b] : edge){
             g[a].r++;
             g[b].r++;
@@ -30,5 +33,5 @@ struct fast_graph{
     size_t size() const { return g.size(); }
     auto begin() const { return g.begin(); }
     auto end() const { return g.end(); }
-    const auto& operator[](ssize_t i) const { return g[i]; }
+    const auto& operator[](size_t i) const { return g[i]; }
 };
