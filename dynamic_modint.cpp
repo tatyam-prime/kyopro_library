@@ -99,7 +99,7 @@ mint inverse(long long n) { return inv[n] * fac[n - 1]; }
 mint perm(long long n, long long r) {
     if(n < r || r < 0) return 0;
     if(n > fact_mx) [[unlikely]] {
-        mint ans = 0, x = n;
+        mint ans = 1, x = n;
         while(r--) ans *= x--;
         return ans;
     }
