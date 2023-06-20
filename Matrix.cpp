@@ -38,7 +38,7 @@ struct Matrix{
     }
     template<size_t K> Matrix<T, N, K> operator*(const Matrix<T, M, K>& b){
         Matrix<T, N, K> c;
-        for(size_t i = 0; i < N; i++) for(size_t j = 0; j < M; j++) for(size_t k = 0; k < K; k++) c[i][k] += a[i][j] * b[j][k];
+        for(size_t j = 0; j < M; j++) for(size_t i = 0; i < N; i++) for(size_t k = 0; k < K; k++) c[i][k] += a[i][j] * b[j][k];
         return c;
     }
     Matrix& operator*=(const Matrix<T, M, M>& b){
@@ -136,7 +136,7 @@ struct Matrix{
         assert(M == b.N);
         const size_t K = b.M;
         Matrix c(N, K);
-        for(size_t i = 0; i < N; i++) for(size_t j = 0; j < M; j++) for(size_t k = 0; k < K; k++) c[i][k] += *this[i][j] * b[j][k];
+        for(size_t j = 0; j < M; j++) for(size_t i = 0; i < N; i++) for(size_t k = 0; k < K; k++) c[i][k] += *this[i][j] * b[j][k];
         return c;
     }
     Matrix& operator*=(const Matrix& b){
