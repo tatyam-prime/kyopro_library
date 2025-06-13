@@ -1,15 +1,15 @@
 template<class S, auto op, auto e>
 class UnionFindMonoid {
-    static_assert(is_convertible_v<decltype(op), std::function<S(S, S)>>,
+    static_assert(std::is_convertible_v<decltype(op), std::function<S(S, S)>>,
                   "op must work as S(S, S)");
-    static_assert(is_convertible_v<decltype(e), std::function<S()>>,
+    static_assert(std::is_convertible_v<decltype(e), std::function<S()>>,
                   "e must work as S()");
     int _n;
-    vector<int> parent_or_size;
-    vector<S> data;
+    std::vector<int> parent_or_size;
+    std::vector<S> data;
 public:
     UnionFindMonoid(int n = 0) : _n(n), parent_or_size(n, -1), data(n, e()) {}
-    UnionFindMonoid(const vector<S>& a) : _n((int)a.size()), parent_or_size(a.size(), -1), data(a) {}
+    UnionFindMonoid(const std::vector<S>& a) : _n((int)a.size()), parent_or_size(a.size(), -1), data(a) {}
     
     int leader(int a) {
         assert(0 <= a && a < _n);
