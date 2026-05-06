@@ -115,3 +115,122 @@ struct SegmentTree2D{
         return get({x1, y1}, {x2, y2});
     }
 };
+
+
+template<class T, auto op, auto e>
+concept SegtreeMonoid = requires(T a, T b) {
+    { op(a, b) } -> convertible_to<T>;
+    { e() } -> convertible_to<T>;
+};
+template<class T, auto op, auto e>
+requires SegtreeMonoid<T, op, e>
+struct LLSeg1 {
+    int n_, n, lg;
+    vector<T> seg, lz;
+    LLSeg1(int n_): n_(n_), n(bit_ceil<unsigned>(n_)), lg(bit_width<unsigned>(n) - 1), seg(n * 2, e()), lz(n * 2, e()) {}
+    void apply(int l, int r, T x) {
+        assert(0 <= l && l <= r && r <= n_);
+        // for i in segments(l, r):
+        //     lz[i] *= x
+        //     for j in ancestors(i):
+        //         seg[j] *= x.pow(i.length())
+        static vector<T> powx(lg + 1);
+        powx[0] = x;
+        for (int i = 0; i < lg; i++) powx[i + 1] = op(powx[i], powx[i]);
+        auto dfs = [&](this auto dfs, int lg, int i, int L, int R) -> T {
+            // return x.pow(min(r, R) - max(l, L))
+            if (R <= l || r <= L) return e();
+            if (l <= L && R <= r) {
+                add(lz[i], x);
+                return powx[lg];
+            }
+            const int mid = (L + R) >> 1;
+            T res = dfs(lg - 1, i << 1, L, mid);
+            add(res, dfs(lg - 1, i << 1 | 1, mid, R));
+            add(seg[i], res);
+            return res;
+        };
+        dfs(lg, 1, 0, n);
+    }
+    T prod(int l, int r) const {
+        assert(0 <= l && l <= r && r <= n_);
+        static vector<T> powx;
+        powx.assign(lg + 1, e());
+        auto dfs = [&](this auto dfs, int lg, int i, int L, int R, T down) -> void {
+            if (R <= l || r <= L) return;
+            add(down, lz[i]);
+            if (l <= L && R <= r) {
+                // res *= down.pow(1 << lg);
+                add(powx[lg], down);
+                add(powx[0], seg[i]);
+                return;
+            }
+            const int mid = (L + R) >> 1;
+            dfs(lg - 1, i << 1, L, mid, down);
+            dfs(lg - 1, i << 1 | 1, mid, R, down);
+        };
+        dfs(lg, 1, 0, n, e());
+        for (int i = lg; i > 0; i--) {
+            add(powx[i - 1], op(powx[i], powx[i]));
+        }
+        return powx[0];
+    }
+private:
+    static void add(T& a, T b) { a = op(a, b); }
+};
+template<class T, auto op, auto e>
+requires SegtreeMonoid<T, op, e>
+struct LLSeg2 {
+    int n_, n, lg;
+    vector<LLSeg1<T, op, e>> seg, lz;
+    LLSeg2(int n_, int m_): n_(n_), n(bit_ceil<unsigned>(n_)), lg(bit_width<unsigned>(n) - 1), seg(n * 2, m_), lz(n * 2, m_) {}
+    void apply(int u, int d, int l, int r, T x) {
+        assert(0 <= u && u <= d && d <= n_);
+        // for i in segments(l, r):
+        //     lz[i] *= x
+        //     for j in ancestors(i):
+        //         seg[j] *= x.pow(i.length())
+        static vector<T> powx(lg + 1);
+        powx[0] = x;
+        for (int i = 0; i < lg; i++) powx[i + 1] = op(powx[i], powx[i]);
+        auto dfs = [&](this auto dfs, int lg, int i, int U, int D) -> T {
+            // return x.pow(min(r, R) - max(l, L))
+            if (D <= u || d <= U) return e();
+            if (u <= U && D <= d) {
+                lz[i].apply(l, r, x);
+                return powx[lg];
+            }
+            const int mid = (U + D) >> 1;
+            T res = dfs(lg - 1, i << 1, U, mid);
+            res = op(res, dfs(lg - 1, i << 1 | 1, mid, D));
+            seg[i].apply(l, r, res);
+            return res;
+        };
+        dfs(lg, 1, 0, n);
+    }
+    T prod(int u, int d, int l, int r) const {
+        assert(0 <= u && u <= d && d <= n_);
+        static vector<T> powx;
+        powx.assign(lg + 1, e());
+        auto dfs = [&](this auto dfs, int lg, int i, int U, int D, T down) -> void {
+            if (D <= u || d <= U) return;
+            add(down, lz[i].prod(l, r));
+            if (u <= U && D <= d) {
+                // res *= down.pow(1 << lg);
+                add(powx[lg], down);
+                add(powx[0], seg[i].prod(l, r));
+                return;
+            }
+            const int mid = (U + D) >> 1;
+            dfs(lg - 1, i << 1, U, mid, down);
+            dfs(lg - 1, i << 1 | 1, mid, D, down);
+        };
+        dfs(lg, 1, 0, n, e());
+        for (int i = lg; i > 0; i--) {
+            add(powx[i - 1], op(powx[i], powx[i]));
+        }
+        return powx[0];
+    }
+private:
+    static void add(T& a, T b) { a = op(a, b); }
+};
