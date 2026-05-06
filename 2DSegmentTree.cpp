@@ -130,15 +130,11 @@ struct LLSeg1 {
     LLSeg1(int n_): n_(n_), n(bit_ceil<unsigned>(n_)), lg(bit_width<unsigned>(n) - 1), seg(n * 2, e()), lz(n * 2, e()) {}
     void apply(int l, int r, T x) {
         assert(0 <= l && l <= r && r <= n_);
-        // for i in segments(l, r):
-        //     lz[i] *= x
-        //     for j in ancestors(i):
-        //         seg[j] *= x.pow(i.length())
-        static vector<T> powx(lg + 1);
+        static vector<T> powx;
+        powx.resize(lg + 1);
         powx[0] = x;
         for (int i = 0; i < lg; i++) powx[i + 1] = op(powx[i], powx[i]);
         auto dfs = [&](this auto dfs, int lg, int i, int L, int R) -> T {
-            // return x.pow(min(r, R) - max(l, L))
             if (R <= l || r <= L) return e();
             if (l <= L && R <= r) {
                 add(lz[i], x);
@@ -160,7 +156,6 @@ struct LLSeg1 {
             if (R <= l || r <= L) return;
             add(down, lz[i]);
             if (l <= L && R <= r) {
-                // res *= down.pow(1 << lg);
                 add(powx[lg], down);
                 add(powx[0], seg[i]);
                 return;
@@ -186,15 +181,11 @@ struct LLSeg2 {
     LLSeg2(int n_, int m_): n_(n_), n(bit_ceil<unsigned>(n_)), lg(bit_width<unsigned>(n) - 1), seg(n * 2, m_), lz(n * 2, m_) {}
     void apply(int u, int d, int l, int r, T x) {
         assert(0 <= u && u <= d && d <= n_);
-        // for i in segments(l, r):
-        //     lz[i] *= x
-        //     for j in ancestors(i):
-        //         seg[j] *= x.pow(i.length())
-        static vector<T> powx(lg + 1);
+        static vector<T> powx;
+        powx.resize(lg + 1);
         powx[0] = x;
         for (int i = 0; i < lg; i++) powx[i + 1] = op(powx[i], powx[i]);
         auto dfs = [&](this auto dfs, int lg, int i, int U, int D) -> T {
-            // return x.pow(min(r, R) - max(l, L))
             if (D <= u || d <= U) return e();
             if (u <= U && D <= d) {
                 lz[i].apply(l, r, x);
@@ -216,7 +207,6 @@ struct LLSeg2 {
             if (D <= u || d <= U) return;
             add(down, lz[i].prod(l, r));
             if (u <= U && D <= d) {
-                // res *= down.pow(1 << lg);
                 add(powx[lg], down);
                 add(powx[0], seg[i].prod(l, r));
                 return;
