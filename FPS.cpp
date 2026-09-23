@@ -184,3 +184,20 @@ struct Poly{
         return ans;
     }
 };
+Modint bostan_mori(Poly P, Poly Q, ll n){
+    assert(n >= 0 && Q.size() && Q[0] != 0);
+    for(; n && P.size(); n /= 2){
+        if(n < P.size()) P.resize(n + 1);
+        if(n < Q.size()) Q.resize(n + 1);
+        Poly R = Q;
+        for(ll i = 1; i < R.size(); i += 2) R[i] = -R[i];
+        P *= R;
+        Q *= R;
+        const ll m = (P.size() + 1 - (n & 1)) / 2;
+        for(ll i = 0; i < m; i++) P[i] = P[i * 2 + (n & 1)];
+        P.resize(m);
+        for(ll i = 0; i < (Q.size() + 1) / 2; i++) Q[i] = Q[i * 2];
+        Q.resize((Q.size() + 1) / 2);
+    }
+    return P.size() ? P[0] / Q[0] : Modint(0);
+}
