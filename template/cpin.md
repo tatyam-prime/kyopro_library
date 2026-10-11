@@ -7,6 +7,7 @@
 
 ```cpp
 int main() {
+    using namespace cpin;
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
