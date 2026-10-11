@@ -1,6 +1,7 @@
-# ジェネレータと IN マクロ
+# ジェネレータと IN マクロの使い方
 
-[cpin.cpp](./cpin.cpp) は、ジェネレータから多次元 vector を簡単に作成するための class `cpin::GEN` と，入力を行うジェネレータ群を提供します．
+[main.cpp](main.cpp) では、値を作る処理を「ジェネレータ」として組み合わせられます。`LL` は標準入力から値を読み、`K(x)` は定数を返し、`ID` は添字を返します。これらを `TP(...)`、`.array<N>()`、`[個数]` などで組み合わせると、組や配列を作るジェネレータになります。
+
 `IN(...)` はジェネレータを呼び出し、その結果で変数を宣言するマクロです。入力を読む用途にも、定数や計算結果からデータを作る用途にも使えます。ジェネレータは `()` で直接呼び出すこともできます。
 
 ## 使用例
@@ -170,16 +171,6 @@ for (auto [u, v, cost] : edges) {
 
 結果は `edges = {(0, 2, 10), (1, 2, 20)}` です。
 
-### `ARR(...)`：固定長の array
-
-```cpp
-IN(n, points = ARR(LL, LL)[n]);
-// points: vector<array<long long, 2>>
-// 各点を x, y の順に読み、points[i][0], points[i][1] で参照する
-```
-
-`ARR` は `std::array` を返します。要素の型が異なる場合は `common_type_t` で共通の型にそろえるので、例えば `ARR(INT, LL)` は `array<long long, 2>` になります。
-
 ## 5. 添字・定数・独自の変換を組み合わせる
 
 | ジェネレータ | 返す値 | 標準入力を読むか |
@@ -207,6 +198,8 @@ IN(n, b = FN(i, LL() + i)[n]);
 
 ## 6. vector 以外のコンテナに入れる
 
+### .to<コンテナ>(個数)
+
 `ジェネレータ.to<コンテナ>(個数)` で、格納先を指定できます。
 
 ```cpp
@@ -233,6 +226,15 @@ IN(n, q = LL.to<deque<ll>>(n));
 ```cpp
 IN(n, names = (FN(i, pair{INT(), STR()}).to<map<int, string>>(n)));
 // names: map<int, string>。同じキーが複数ある場合は最初の値を残す
+```
+
+### std::array に変換する
+
+`gen.array<N>()` は、ジェネレータ `gen` の結果を `N` 個並べた `std::array` を作るジェネレータです。`N` はコンパイル時に決まる定数で、要素を添字 `0, 1, ..., N-1` の順に生成します。
+
+```cpp
+IN(a = INT.array<3>());           // a: array<int, 3>
+IN(n, points = LL.array<2>()[n]);  // points: vector<array<long long, 2>>
 ```
 
 ## IN を使わずに変数を作る
