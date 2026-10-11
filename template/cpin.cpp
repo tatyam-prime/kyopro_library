@@ -40,10 +40,6 @@ CPI_TYPES(CPI_READER)
 [[maybe_unused]] const auto ID = GEN{[](ll i) { return i; }};
 auto K(auto x) { return GEN{[x = move(x)](ll) { return x; }}; }
 auto TP(auto... p) { return GEN{[=](ll i) { return tuple{p(i)...}; }}; }
-auto ARR(auto... p) { return GEN{[=](ll i) {
-    using T = common_type_t<decltype(p(i))...>;
-    return array<T, sizeof...(p)>{T(p(i))...};
-}}; }
 #define FN(i,...) cpin::GEN{[&](ll i) { return (__VA_ARGS__); }}
 #define CPI_E0(...) __VA_ARGS__
 #define CPI_E1(...) CPI_E0(CPI_E0(CPI_E0(__VA_ARGS__)))
