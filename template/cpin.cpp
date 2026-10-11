@@ -7,7 +7,7 @@ template<class F> struct GEN {
     auto operator()(ll i = 0) const { return f(i); }
     auto operator=(eval_tag) const { return (*this)(); }
     template<class A> auto to(auto n) const {
-        return cpin::GEN{[p = *this, n](ll) {
+        auto g = [p = *this, n](ll) {
             ll size;
             if constexpr (requires { n(); }) size = n();
             else size = n;
@@ -15,7 +15,8 @@ template<class F> struct GEN {
             if constexpr (requires { a.reserve(size); }) a.reserve(size);
             for (ll i = 0; i < size; ++i) a.insert(a.end(), p(i));
             return a;
-        }};
+        };
+        return GEN<decltype(g)>{g};
     }
     template<template<class...> class A> auto to(auto n) const {
         return to<decltype(ranges::to<A>(declval<vector<decltype((*this)())>>() | views::as_rvalue))>(n);
