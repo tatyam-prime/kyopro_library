@@ -141,7 +141,7 @@ IN(n, a = (INT - 1)[n]);
 
 ## 4. 複数の値を 1 組にする
 
-### `TP(...)`：異なる型も使える tuple
+### `PR(p, q)`, `TP(...)`：異なる型も使える pair / tuple
 
 ```cpp
 IN(record = TP(INT, STR, DBL));
