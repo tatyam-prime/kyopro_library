@@ -22,6 +22,13 @@ template<class F> struct GEN {
         return to<decltype(ranges::to<A>(declval<vector<decltype((*this)())>>() | views::as_rvalue))>(n);
     }
     auto operator[](auto n) const { return to<vector>(n); }
+    template<size_t N> auto array() const {
+        return cpin::GEN{[p = *this](ll) {
+            std::array<decltype(p()), N> a;
+            if constexpr (N > 0) for (size_t i = 0; i < N; ++i) a[i] = p(i);
+            return a;
+        }};
+    }
     auto operator-(auto d) const {
         return cpin::GEN{[p = *this, d](ll i) { return p(i) - d; }};
     }
