@@ -39,6 +39,7 @@ template<class T> const auto RD = GEN{[](ll) { return read<T>(); }};
 CPI_TYPES(CPI_READER)
 [[maybe_unused]] const auto ID = GEN{[](ll i) { return i; }};
 auto K(auto x) { return GEN{[x = move(x)](ll) { return x; }}; }
+auto PR(auto p, auto q) { return GEN{[=](ll i) { return pair{p(i), q(i)}; }}; }
 auto TP(auto... p) { return GEN{[=](ll i) { return tuple{p(i)...}; }}; }
 #define FN(i,...) cpin::GEN{[&](ll i) { return (__VA_ARGS__); }}
 #define CPI_E0(...) __VA_ARGS__
