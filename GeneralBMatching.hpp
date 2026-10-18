@@ -1,236 +1,135 @@
 #pragma once
 #include <algorithm>
+#include <array>
 #include <cassert>
-#include <climits>
-#include <list>
-#include <numeric>
+#include <functional>
 #include <ranges>
 #include <utility>
 #include <vector>
-
-
-// https://github.com/tatyam-prime/kyopro_library/blob/master/GeneralBMatching.hpp
-namespace b_matching_detail {
 using ll = long long;
-using Matrix = std::vector<std::vector<ll>>;
+using namespace std;
 
-// Regular s -> s^1 path. Node/arc mates have consecutive IDs.
-// Bud trimming, deleting internal arcs: O(N^2 + M) time/space.
-struct RegularPath {
-    struct Arc { int u, v; };
-    struct Bud { std::vector<int> members, children, path; int base = -1; };
-    int n, s, stamp = 0;
-    std::vector<Arc> arcs;
-    std::vector<Bud> buds;
-    std::vector<std::vector<int>> adj;
-    std::vector<int> owner, parent, side, mark, queue;
-    std::vector<char> active;
-
-    RegularPath(int vertices, int source) : n(vertices / 2), s(source),
-        buds(n), adj(vertices), owner(n), parent(vertices, -1),
-        side(vertices), mark(vertices), active(vertices) {
-        std::iota(owner.begin(), owner.end(), 0);
-        for (int v = 0; v < n; ++v) buds[v].members.push_back(v);
+namespace bm_detail {
+using Mat = vector<vector<ll>>;
+// Regular s -> s^1 path, with consecutive node/arc mates. O(n^2 + m).
+struct Path {
+    struct Bud { vector<int> id, p; int e = -1; };
+    int n, s;
+    vector<Bud> bs;
+    vector<vector<int>> g;
+    vector<int> to, id, par, col, q;
+    vector<char> vis;
+    Path(int m, int src) : n(m / 2), s(src), bs(n), g(m), id(from_range, views::iota(0, n)), par(m, -1), col(m), vis(m) {}
+    void add(int u, int v, ll c) {
+        for (int k = 0; k < min(c, 2LL); ++k) { int e = ssize(to); to.append_range(array{v, u ^ 1}); g[u].push_back(e); g[v ^ 1].push_back(e ^ 1); }
     }
-    void add(int u, int v, ll cap) {
-        for (int k = 0; k < std::min<ll>(cap, 2); ++k) {
-            int e = int(arcs.size());
-            arcs.push_back({u, v}); arcs.push_back({v ^ 1, u ^ 1});
-            adj[u].push_back(e); adj[v ^ 1].push_back(e ^ 1);
-        }
-    }
-    int head(int e) const {
-        int v = arcs[e].v, g = owner[v / 2];
-        return g < n ? v : 2 * g + (e != buds[g].base);
-    }
-    int tail(int e) const { return head(e ^ 1) ^ 1; }
-    void activate(int v) {
-        if (!std::exchange(active[v], true))
-            queue.insert(queue.end(), adj[v].begin(), adj[v].end());
-    }
-    static std::vector<int> mirror(std::vector<int> p) {
-        std::ranges::reverse(p);
-        for (int& e : p) e ^= 1;
-        return p;
-    }
-    std::vector<int> prefix(int g, int target) const {
-        if (head(buds[g].base) == target) return {};
-        for (auto p : {buds[g].path, mirror(buds[g].path)}) {
-            std::vector<int> out;
-            for (int e : p) {
-                out.push_back(e);
-                if (head(e) == target) return out;
-            }
+    int hd(int e) const { int v = to[e], k = id[v / 2]; return k < n ? v : 2 * k + (e != bs[k].e); }
+    int tl(int e) const { return hd(e ^ 1) ^ 1; }
+    void act(int v) { if (!exchange(vis[v], true)) q.append_range(g[v]); }
+    static vector<int> rev(vector<int> p) { ranges::reverse(p); for (int& e : p) e ^= 1; return p; }
+    vector<int> pref(int k, int v) const {
+        if (hd(bs[k].e) == v) return {};
+        auto p = bs[k].p;
+        for (int i = 0; i < 2; ++i, p = rev(move(p))) {
+            auto it = ranges::find(p, v, [&](int e) { return hd(e); });
+            if (it != p.end()) return vector(p.begin(), it + 1);
         }
         assert(false); return {};
     }
-    std::vector<int> expand(std::vector<int> p) {
-        for (int g = int(buds.size()) - 1; g >= n; --g) {
-            for (int child : buds[g].children)
-                for (int v : buds[child].members) owner[v] = child;
-            std::vector<int> out;
-            for (int k = 0; k < int(p.size()); ++k) {
-                int e = p[k];
-                if (k && head(p[k - 1]) != tail(e)) {
-                    auto bridge = p[k - 1] == buds[g].base
-                        ? prefix(g, tail(e)) : mirror(prefix(g, head(p[k - 1]) ^ 1));
-                    out.insert(out.end(), bridge.begin(), bridge.end());
-                }
-                out.push_back(e);
+    vector<int> lift(vector<int> p) {
+        for (int k = ssize(bs) - 1; k >= n; --k) {
+            id = bs[k].id; vector<int> r;
+            for (auto [i, e] : p | views::enumerate) {
+                if (i && hd(p[i - 1]) != tl(e)) r.append_range(p[i - 1] == bs[k].e ? pref(k, tl(e)) : rev(pref(k, hd(p[i - 1]) ^ 1)));
+                r.push_back(e);
             }
-            p.swap(out);
+            p.swap(r);
         }
         return p;
     }
-    std::vector<int> find() {
-        side[s] = 1; side[s ^ 1] = 2; activate(s);
-        for (int qi = 0; qi < int(queue.size()); ++qi) {
-            int e = queue[qi], a = owner[arcs[e].u / 2], b = owner[arcs[e].v / 2];
-            if (a == b && a >= n) continue; // Internal arc of a trimmed bud.
-            int v = tail(e), w = head(e);
-            if (side[v] != 1 || side[w] == 1) continue;
-            if (!side[w]) {
-                side[w] = 1; side[w ^ 1] = 2; parent[w] = e;
-                activate(w); continue;
-            }
-            ++stamp;
-            for (int z = v;; z = tail(parent[z])) {
-                mark[z] = stamp;
-                if (z == s) break;
-            }
-            int lca = w ^ 1;
-            while (mark[lca] != stamp) lca = tail(parent[lca]);
-            std::vector<int> p, q, children{lca / 2};
-            for (int z = v; z != lca; z = tail(parent[z])) {
-                p.push_back(parent[z]); children.push_back(z / 2);
-            }
-            for (int z = w ^ 1; z != lca; z = tail(parent[z])) {
-                q.push_back(parent[z] ^ 1); children.push_back(z / 2);
-            }
-            std::ranges::reverse(p); p.push_back(e); p.insert(p.end(), q.begin(), q.end());
-            if (lca == s) return expand(std::move(p));
-            Bud bud{{}, std::move(children), std::move(p), parent[lca]};
-            for (int child : bud.children)
-                bud.members.insert(bud.members.end(), buds[child].members.begin(), buds[child].members.end());
-            int g = int(buds.size()); buds.push_back(std::move(bud));
-            parent.push_back(buds[g].base); parent.push_back(-1);
-            side.push_back(1); side.push_back(2); mark.resize(2 * buds.size());
-            for (int z : buds[g].members) owner[z] = g;
-            for (int z : buds[g].members) { activate(2 * z); activate(2 * z + 1); }
+    vector<int> find() {
+        col[s] = 1; col[s ^ 1] = 2; act(s);
+        auto walk = [&](int v) { vector<int> p; for (; v != s; v = tl(par[v])) p.push_back(par[v]); ranges::reverse(p); return p; };
+        for (int at = 0; at < ssize(q); ++at) {
+            int e = q[at], v = tl(e), w = hd(e);
+            if ((v >= 2 * n && v == (w ^ 1)) || col[v] != 1 || col[w] == 1) continue;
+            if (!col[w]) { col[w] = 1; col[w ^ 1] = 2; par[w] = e; act(w); continue; }
+            auto p = walk(v), r = walk(w ^ 1); auto [i, j] = ranges::mismatch(p, r);
+            int be = i == p.begin() ? -1 : i[-1];
+            p.erase(p.begin(), i); r.erase(r.begin(), j); p.push_back(e); p.append_range(rev(move(r)));
+            if (be < 0) return lift(move(p));
+            int k = ssize(bs); bs.push_back({id, move(p), be});
+            for (int a : bs[k].p) col[tl(a) & ~1] = col[hd(a) & ~1] = 3;
+            par.append_range(array{be, -1}); col.append_range(array{1, 2});
+            for (int z = 0; z < n; ++z) if (col[2 * id[z]] == 3) { id[z] = k; act(2 * z); act(2 * z + 1); }
         }
         return {};
     }
 };
-} // namespace b_matching_detail
+} // namespace bm_detail
 
-// Exact maximum cardinality b-matching: O(n^3) time, O(n^2) space.
-// b >= 0, c >= 0 symmetric, sum(b) <= LLONG_MAX. A loop consumes degree 2.
-// Returns {maximum size, symmetric matrix of edge multiplicities}.
-inline auto b_matching(const std::vector<long long>& b,
-                       std::vector<std::vector<long long>> c) {
-    using namespace b_matching_detail;
-    int n = int(b.size()), s = 2 * n, t = s + 1, N = t + 1;
-    ll total = 0;
-    assert(int(c.size()) == n);
-    for (int u = 0; u < n; ++u) {
-        assert(b[u] >= 0 && b[u] <= LLONG_MAX - total); total += b[u];
-        assert(int(c[u].size()) == n);
-    }
+// O(n^3) time / O(n^2) space. b,c >= 0, c symmetric, sum(b) <= LLONG_MAX.
+// Returns {size, symmetric multiplicity matrix}. A loop consumes degree 2.
+// https://github.com/tatyam-prime/kyopro_library/blob/master/GeneralBMatching.hpp
+auto b_matching(vector<ll> b, vector<vector<ll>> c) {
+    using namespace bm_detail;
+    int n = ssize(b), s = 2 * n, t = s + 1, m = t + 1;
+    Mat r(m, vector<ll>(m)), x(n, vector<ll>(n)); vector<ll> ex(m);
     for (int u = 0; u < n; ++u) for (int v = u; v < n; ++v) {
-        assert(c[u][v] >= 0 && c[u][v] == c[v][u]);
-        c[u][v] = c[v][u] = std::min(c[u][v], u == v ? b[u] / 2 : std::min(b[u], b[v]));
+        c[u][v] = c[v][u] = min(c[u][v], u == v ? b[u] / 2 : min(b[u], b[v]));
+        r[2 * u][2 * v + 1] = r[2 * v][2 * u + 1] = c[u][v] * (1 + (u == v));
     }
-    Matrix r(N, std::vector<ll>(N)), x(n, std::vector<ll>(n));
-    for (int v = 0; v < n; ++v) r[s][2 * v] = r[2 * v + 1][t] = b[v];
-    for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v)
-        r[2 * u][2 * v + 1] = c[u][v] * (1 + (u == v));
-
+    for (int v = 0; v < n; ++v) r[2 * v][s] = r[2 * v + 1][t] = ex[2 * v] = b[v];
     // Dense relabel-to-front maximum flow.
-    std::vector<ll> excess(N);
-    std::vector<int> height(N), next(N);
-    height[s] = N;
-    for (int v = 0; v < N; ++v) {
-        ll d = std::exchange(r[s][v], 0);
-        r[v][s] += d; excess[v] += d; excess[s] -= d;
-    }
-    std::list<int> order;
-    for (int v = 0; v < s; ++v) order.push_back(v);
-    for (auto it = order.begin(); it != order.end(); ++it) {
-        int v = *it, old = height[v];
-        while (excess[v]) {
-            if (next[v] == N) {
-                int h = 2 * N;
-                for (int w = 0; w < N; ++w) if (r[v][w]) h = std::min(h, height[w]);
-                height[v] = h + 1; next[v] = 0;
+    vector<int> h(m), it(m); h[s] = m; vector ord(from_range, views::iota(0, s));
+    for (int k = 0; k < s; ++k) {
+        int v = ord[k], hv = h[v];
+        while (ex[v]) {
+            if (it[v] == m) {
+                int z = 2 * m; for (int w = 0; w < m; ++w) if (r[v][w]) z = min(z, h[w]); h[v] = z + 1; it[v] = 0;
             } else {
-                int w = next[v];
-                if (!r[v][w] || height[v] != height[w] + 1) { ++next[v]; continue; }
-                ll d = std::min(excess[v], r[v][w]);
-                r[v][w] -= d; r[w][v] += d; excess[v] -= d; excess[w] += d;
+                int w = it[v];
+                if (!r[v][w] || h[v] != h[w] + 1) { ++it[v]; continue; }
+                ll d = min(ex[v], r[v][w]); r[v][w] -= d; r[w][v] += d; ex[v] -= d; ex[w] += d;
             }
         }
-        if (height[v] > old) { order.splice(order.begin(), order, it); it = order.begin(); }
+        if (h[v] > hv) { ranges::rotate(ord | views::take(k + 1), ord.begin() + k); k = 0; }
     }
-    ll upper = excess[t] / 2;
-
-    // Round half-integral edges along Euler trails, starting with floor.
-    std::vector<std::pair<int, int>> ends;
-    std::vector<std::vector<int>> adj(n + 1);
-    auto add = [&](int u, int v) {
-        int e = int(ends.size()); ends.emplace_back(u, v);
-        adj[u].push_back(e); adj[v].push_back(e);
-    };
+    // Euler rounding of half-integral edges.
+    vector f(n + 1, vector<char>(n + 1));
     for (int u = 0; u < n; ++u) for (int v = u; v < n; ++v) {
-        ll twice = r[2 * v + 1][2 * u] + (u == v ? 0 : r[2 * u + 1][2 * v]);
-        x[u][v] = x[v][u] = twice / 2;
-        if (twice % 2) add(u, v);
+        ll z = r[2 * v + 1][2 * u] + (u == v ? 0 : r[2 * u + 1][2 * v]); x[u][v] = x[v][u] = z / 2;
+        if (z % 2) { f[u][v] = f[v][u] = 1; f[u][n] ^= 1; f[v][n] ^= 1; }
     }
-    for (int v = 0; v < n; ++v) if (adj[v].size() % 2) add(v, n);
-    std::vector<bool> used(ends.size());
-    next.assign(n + 1, 0);
-    for (int start = n; start >= 0; --start) {
-        std::vector<int> vs{start}, es{-1}, trail;
-        while (!vs.empty()) {
-            int v = vs.back();
-            while (next[v] < int(adj[v].size()) && used[adj[v][next[v]]]) ++next[v];
-            if (next[v] == int(adj[v].size())) {
-                vs.pop_back(); if (es.back() != -1) trail.push_back(es.back()); es.pop_back();
-            } else {
-                int e = adj[v][next[v]++]; used[e] = true;
-                auto [a, z] = ends[e]; vs.push_back(a ^ z ^ v); es.push_back(e);
+    for (int v = 0; v < n; ++v) f[n][v] = f[v][n];
+    it.assign(n + 1, 0);
+    for (int i = n; i >= 0; --i) {
+        vector<int> st{i}; int pre = n, bit = 0;
+        while (!st.empty()) {
+            int v = st.back(), &w = it[v]; while (w <= n && !f[v][w]) ++w;
+            if (w <= n) { f[v][w] = f[w][v] = 0; st.push_back(w); }
+            else {
+                if (pre == n || v == n) bit = 0;
+                else { x[v][pre] += bit; x[pre][v] = x[v][pre]; bit ^= 1; }
+                pre = v; st.pop_back();
             }
         }
-        int parity = 0;
-        for (int e : trail | std::views::reverse) {
-            auto [u, v] = ends[e];
-            if (u == n || v == n) { parity = 0; continue; }
-            x[u][v] += parity; x[v][u] = x[u][v]; parity ^= 1;
-        }
     }
-    ll size = 0;
-    for (;;) {
-        std::vector<ll> degree(n);
-        size = 0;
+    ll ans = 0, ub = ex[t] / 2;
+    for (int v = 0; v < n; ++v) { ll d = ranges::fold_left(x[v], x[v][v], plus{}); b[v] -= d; ans += d; }
+    ans /= 2;
+    while (ans < ub) {
+        Path sp(m, s);
+        for (int v = 0; v < n; ++v) sp.add(s, 2 * v, b[v]);
         for (int u = 0; u < n; ++u) for (int v = u; v < n; ++v) {
-            assert(0 <= x[u][v] && x[u][v] <= c[u][v]);
-            size += x[u][v]; degree[u] += x[u][v]; degree[v] += x[u][v];
+            sp.add(2 * u, 2 * v + 1, c[u][v] - x[u][v]); sp.add(2 * v + 1, 2 * u, x[u][v]);
         }
-        for (int v = 0; v < n; ++v) assert(degree[v] <= b[v]);
-        if (size == upper) break;
-        RegularPath search(N, s);
-        for (int v = 0; v < n; ++v) search.add(s, 2 * v, b[v] - degree[v]);
-        for (int u = 0; u < n; ++u) for (int v = u; v < n; ++v) {
-            search.add(2 * u, 2 * v + 1, c[u][v] - x[u][v]);
-            search.add(2 * v + 1, 2 * u, x[u][v]);
+        auto p = sp.find(); if (p.empty()) break;
+        for (int e : p) {
+            int u = sp.to[e ^ 1] ^ 1, v = sp.to[e];
+            if (u == s) --b[v / 2]; else if (v == t) --b[u / 2]; else x[u / 2][v / 2] = x[v / 2][u / 2] += u % 2 ? -1 : 1;
         }
-        auto path = search.find();
-        if (path.empty()) break;
-        for (int e : path) {
-            auto [u, v] = search.arcs[e];
-            if (u == s || v == t) continue;
-            ll& z = x[u / 2][v / 2]; z += u % 2 ? -1 : 1;
-            x[v / 2][u / 2] = z;
-        }
+        ++ans;
     }
-    return std::pair{size, std::move(x)};
+    return pair{ans, move(x)};
 }
