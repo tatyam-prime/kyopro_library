@@ -1,14 +1,14 @@
-#pragma GCC optimize("Ofast,unroll-loops")
 #include <immintrin.h>
-using u64 = uint64_t;
-using u64a = u64 __attribute__((may_alias));
-
-// https://gist.github.com/tatyam-prime/00267996616494dc14feb9136c7570d7
+#pragma GCC target("avx512f,avx512vbmi2,avx512vpopcntdq")
+#pragma GCC optimize("Ofast,unroll-loops")
+// https://github.com/tatyam-prime/kyopro_library/blob/master/Bitset_avx512.hpp
 template<size_t N> struct alignas(64) Bitset {
+    using u64 = uint64_t;
+    using u64a = u64 __attribute__((may_alias));
     static_assert(N && N % 512 == 0);
     static constexpr size_t K = N / 512;
     alignas(64) __m512i a[K];
-    static inline const __m512i zero = _mm512_setzero_si512();
+    static inline const __m512i zero{};
     void reset() {
         for (auto& x : a) x = zero;
     }
