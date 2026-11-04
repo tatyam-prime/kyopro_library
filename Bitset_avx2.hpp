@@ -1,6 +1,7 @@
 #include <immintrin.h>
 #pragma GCC target("avx2")
 #pragma GCC optimize("Ofast,unroll-loops")
+// https://github.com/tatyam-prime/kyopro_library/blob/master/Bitset_avx2.hpp
 template<size_t N> struct alignas(32) Bitset {
     using V = __m256i;
     using u64 = uint64_t;
