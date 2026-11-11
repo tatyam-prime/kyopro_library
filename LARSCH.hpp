@@ -1,5 +1,6 @@
 // f(i, j) (0 <= j < i < n) must be totally monotone
 // i-th get() returns {min f(i, *), leftmost argmin}.
+// https://github.com/tatyam-prime/kyopro_library/blob/master/LARSCH.hpp
 template<class F> struct LARSCH {
     using T = decay_t<invoke_result_t<F&, int, int>>;
     struct S { int n, i = 0, p = 0, b = 0, s = 0; vector<pair<int, int>> c; T mn{}; };
@@ -48,6 +49,7 @@ template<class F> struct LARSCH {
 
 // f(i, j, k) := prefer A[i][j] to A[i][k]? (0 ≤ j < k < i < n)
 // i-th get() returns j s.t. A[i][j] is best
+// https://github.com/tatyam-prime/kyopro_library/blob/master/LARSCH.hpp
 template<class F> struct LARSCH_cmp {
     struct S { int n, i = 0, p = 0, b = 0, s = 0; vector<pair<int, int>> c; };
     F f;
