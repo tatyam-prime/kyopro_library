@@ -71,15 +71,15 @@ template<class F> struct LARSCH_cmp {
                 auto& y = a[k + 1];
                 for (int j = max(0, i - 3); j <= i; ++j) {
                     int c = col(j);
-                    while (y.s > i / 4 && f(y.s << (2 * k + 2), c, y.c[y.s - 1].first)) --y.s;
+                    while (y.s > i / 4 && f(y.s << (2 * k + 2), y.c[y.s - 1].first, c)) --y.s;
                     if (y.s < y.n) y.c[y.s++] = {c, j};
                 }
                 x.b = y.c[next<0>(k + 1)].second;
             }
         }
         int p = i % 4 == 3 ? max(x.p, x.b) : x.p, ans = p;
-        for (int j = p + 1; j <= x.b; ++j) if (f(r, col(j), col(ans))) ans = j;
-        for (int j = max(p + 1, (i & -4) + 1); j <= i; ++j) if (f(r, col(j), col(ans))) ans = j;
+        for (int j = p + 1; j <= x.b; ++j) if (f(r, col(ans), col(j))) ans = j;
+        for (int j = max(p + 1, (i & -4) + 1); j <= i; ++j) if (f(r, col(ans), col(j))) ans = j;
         return x.p = ans;
     }
 };
